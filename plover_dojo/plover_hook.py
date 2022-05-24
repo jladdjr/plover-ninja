@@ -1,9 +1,10 @@
-from plugins.dojo_test import DojoTest
+from plover_dojo.plugins.dojo_test import DojoTest
+from plover_dojo.plugins.activity_log import ActivityLog
 
 import logging
 logger = logging.getLogger(__name__)
 
-DOJO_PLUGINS = [DojoTest]
+DOJO_PLUGINS = [DojoTest, ActivityLog]
 
 
 class Main:
