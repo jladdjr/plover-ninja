@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from plover_dojo.plugins.dojo_plugin import DojoPlugin
+from plover_dojo import storage
 
 class ActivityLog(DojoPlugin):
 
@@ -8,6 +9,7 @@ class ActivityLog(DojoPlugin):
         super().__init__(engine)
         self.first_stroke = None
         self.latest_stroke = None
+        self.activity_log = storage.ActivityLog()
 
     def on_translated(self, old, new):
         pass
@@ -19,6 +21,7 @@ class ActivityLog(DojoPlugin):
             self.latest_stroke = datetime.now()
 
         duration = self.latest_stroke - self.first_stroke
-        with open('/tmp/dojo_activity.txt', 'a') as f:
-            f.write(f'Update: Have been writing for {duration.seconds} seconds\n')
 
+        total_minutes = self.activity_log.add_activity(1)  # TODO
+        with open('/tmp/dojo_activity.txt', 'a') as f:
+            f.write(f'Update: Have been writing for {total_minutes} minutes\n')
