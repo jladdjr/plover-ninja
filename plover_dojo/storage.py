@@ -3,6 +3,7 @@
 import os
 import sqlite3
 from datetime import date
+from time import time
 
 connection = None
 
@@ -71,3 +72,26 @@ class ActivityLog:
         cur.execute('UPDATE activity_log SET active_seconds = ? where date = ?', t)
         self.connection.commit()
         return total_activity
+
+
+class StrokeEfficiencyLog:
+    def __init__(self):
+        self.connection = get_connection()
+        self._ensure_table_exists()
+
+    def _ensure_table_exists(self):
+        cur = self.connection.cursor()
+        try:
+            cur.execute('SELECT * FROM stroke_efficiency_log LIMIT 1')
+            cur.fetchone()
+        except sqlite3.OperationalError:
+            cur.execute('CREATE TABLE stroke_efficiency_log (timestamp REAL, TEXT word, stroke_duration REAL)')
+            self.connection.commit()
+
+    def add_stroke(self, word, stroke_duration, timestamp=None):
+        """Note how long a stroke took. If `timestamp` is omitted,
+        method uses the current time."""
+        cur = self.connection.cursor()
+        t = (timestamp or time(), stroke_duration, word)
+        cur.execute('INSERT INTO stroke_efficiency_log VALUES (?, ?, ?)', t)
+        self.connection.commit()
