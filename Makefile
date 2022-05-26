@@ -1,9 +1,11 @@
-PLOVER_CMD = "plover"
-#PLOVER_CMD = "/Applications/Plover.app/Contents/MacOS/Plover"
+PLOVER_CMD = plover
+#PLOVER_CMD = /Applications/Plover.app/Contents/MacOS/Plover
 
 dev_install:
 	$(PLOVER_CMD) -s plover_plugins install -e .
-        #/Applications/Plover.app/Contents/MacOS/Plover
+	# workaround since using 'Plover -s plover_plugins install'
+	# isn't working on Mac OS X
+	#/Applications/Plover.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 -m pip install -e .
 dev_uninstall:
 	$(PLOVER_CMD) -s plover_plugins install dojo-plugin
 list_plugins:
