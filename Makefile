@@ -1,9 +1,13 @@
+PLOVER_CMD = "plover"
+#PLOVER_CMD = "/Applications/Plover.app/Contents/MacOS/Plover"
+
 dev_install:
-	plover -s plover_plugins install -e .
+	$(PLOVER_CMD) -s plover_plugins install -e .
+        #/Applications/Plover.app/Contents/MacOS/Plover
 dev_uninstall:
-	plover -s plover_plugins install dojo-plugin
+	$(PLOVER_CMD) -s plover_plugins install dojo-plugin
 list_plugins:
-	plover -s plover_plugins list
+	$(PLOVER_CMD) -s plover_plugins list
 tail_log:
 	tail -f /home/jim/.local/share/plover/plover.log
 test:
