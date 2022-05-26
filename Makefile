@@ -17,3 +17,6 @@ clean:
 	rm -rf plover_dojo.egg-info
 	find ./plover_dojo -type d -name __pycache__ -exec rm -rf {} \;
 	find ./plover_dojo -type d -name '*.pyc' -exec rm -rf {} \;
+
+clean_db:
+	rm ~/.dojo/dojo.db

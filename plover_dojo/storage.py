@@ -40,11 +40,11 @@ class ActivityLog:
             cur.execute('SELECT * FROM activity_log LIMIT 1')
             cur.fetchone()
         except sqlite3.OperationalError:
-            cur.execute('CREATE TABLE activity_log (date TEXT, active_minutes INTEGER)')
+            cur.execute('CREATE TABLE activity_log (date TEXT, active_seconds INTEGER)')
             self.connection.commit()
 
     def get_activity(self, day):
-        """Gets activity for `day`. Returns (date, activive_time_in_minutes)
+        """Gets activity for `day`. Returns (date, activive_time_in_seconds)
         if activity was previously recorded for the day. Returns None
         if no activity was logged for the day."""
         cur = self.connection.cursor()
@@ -53,21 +53,21 @@ class ActivityLog:
         activity = cur.fetchone()
         return activity
 
-    def add_activity(self, minutes):
+    def add_activity(self, seconds):
         """Increases the amount of time logged for today.
         Returns total amount of activity for the day."""
         previous_activity_entry = self.get_activity(today())
 
         cur = self.connection.cursor()
         if not previous_activity_entry:
-            t = (today(), minutes)
+            t = (today(), seconds)
             cur.execute('INSERT INTO activity_log VALUES (?, ?)', t)
             self.connection.commit()
-            return minutes
+            return seconds
 
         previous_activity = previous_activity_entry[1]
-        total_activity = previous_activity + minutes
+        total_activity = previous_activity + seconds
         t = (total_activity, today())
-        cur.execute('UPDATE activity_log SET active_minutes = ? where date = ?', t)
+        cur.execute('UPDATE activity_log SET active_seconds = ? where date = ?', t)
         self.connection.commit()
         return total_activity

@@ -37,22 +37,13 @@ class ActivityLog(DojoPlugin):
         gap_between_strokes = int((self.latest_stroke - self.previous_stroke).total_seconds())
 
         if gap_between_strokes > CHORDING_PAUSED_IN_SECONDS:
-            # register previous activity if it's greater than a minute
+            # register previous activity
             previous_activity = int((self.previous_stroke - self.resumed_chording).total_seconds())
-            if previous_activity > 60:
-                # TODO: Keep track of partial minutes
-                # only add up activity is it was at least a minute long
-                previous_activity_in_min = previous_activity // 60
-                total_active_minutes = self.activity_log.add_activity(previous_activity_in_min)
+            total_active_seconds = self.activity_log.add_activity(previous_activity)
 
-                with open('/tmp/dojo_activity.txt', 'a') as f:
-                    f.write(f'\n\nUpdate: Added another {previous_activity_in_min} minutes\n')
-                    f.write(f'Total active minutes: {total_active_minutes}\n\n')
-            else:
-                total_active_minutes = self.activity_log.add_activity(1)
-                with open('/tmp/dojo_activity.txt', 'a') as f:
-                    f.write(f'\n\nPrevious chording session less than a minute, recording a minute anyways\n')
-                    f.write(f'Total active minutes: {total_active_minutes}\n\n')
+            with open('/tmp/dojo_activity.txt', 'a') as f:
+                f.write(f'\n\nUpdate: Added another {previous_activity} seconds\n')
+                f.write(f'Total active minutes: {total_active_seconds // 60}\n\n')
 
             self.resumed_chording = self.latest_stroke
         else:
