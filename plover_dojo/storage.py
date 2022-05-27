@@ -85,10 +85,12 @@ class StrokeEfficiencyLog:
     def add_stroke(self, word, stroke_duration, timestamp=None):
         """Note how long a stroke took. If `timestamp` is omitted,
         method uses the current time."""
-        # TODO: Update to use new Words and Strokes tables
         cur = self.connection.cursor()
         t = (timestamp or time(), stroke_duration, word)
-        cur.execute('INSERT INTO stroke_efficiency_log VALUES (?, ?, ?)', t)
+        cur.execute("""INSERT INTO Strokes(word_id, timestamp, stroke_duration)
+                         SELECT Words.word_id, ?, ?
+                         FROM Words
+                         WHERE Words.word = ? LIMIT 1""", t)
         self.connection.commit()
 
     def get_simple_efficiency_map(self, num_words=10):
@@ -148,7 +150,8 @@ class StrokeEfficiencyLogInitializer:
         except sqlite3.OperationalError:
             cur.execute("""CREATE TABLE Strokes (stroke_id INTEGER PRIMARY KEY,
                                                  FOREIGN KEY(word_id) REFERENCES Words(word_id),
-                                                 frequency INTEGER)""")
+                                                 timestamp REAL,
+                                                 stroke_duration REAL)""")
             cur.execute('CREATE INDEX StrokedWordIndex ON Strokes(word_id)')
             self.connection.commit()
 
