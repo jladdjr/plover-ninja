@@ -31,8 +31,9 @@ class StrokeEfficiencyLog(DojoPlugin):
         with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
             f.write('\n----------------------------------\n')
             f.write('New stroke efficiency results! 🎉\n\n')
-            for word, _, avg_stroke_duration:
+            for word, _, avg_stroke_duration in efficiency_map:
                 f.write(f'{word} => {avg_stroke_duration}\n')
+            f.write('\n')
 
 
     def on_translated(self, old, new):

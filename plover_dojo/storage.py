@@ -108,6 +108,7 @@ class StrokeEfficiencyLog:
                          FROM Words
                          JOIN Strokes ON Words.word_id = Strokes.word_id
                          GROUP BY Words.word
+                         ORDER BY Words.frequency DESC
                     """)
         rows = cur.fetchall()
         return rows
