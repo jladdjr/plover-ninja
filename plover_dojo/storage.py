@@ -80,26 +80,19 @@ class ActivityLog:
 class StrokeEfficiencyLog:
     def __init__(self):
         self.connection = get_connection()
-        self._ensure_table_exists()
-
-    def _ensure_table_exists(self):
-        cur = self.connection.cursor()
-        try:
-            cur.execute('SELECT * FROM stroke_efficiency_log LIMIT 1')
-            cur.fetchone()
-        except sqlite3.OperationalError:
-            cur.execute('CREATE TABLE stroke_efficiency_log (timestamp REAL, TEXT word, stroke_duration REAL)')
-            self.connection.commit()
+        StrokeEfficiencyLogInitializer().initialize()
 
     def add_stroke(self, word, stroke_duration, timestamp=None):
         """Note how long a stroke took. If `timestamp` is omitted,
         method uses the current time."""
+        # TODO: Update to use new Words and Strokes tables
         cur = self.connection.cursor()
         t = (timestamp or time(), stroke_duration, word)
         cur.execute('INSERT INTO stroke_efficiency_log VALUES (?, ?, ?)', t)
         self.connection.commit()
 
     def get_simple_efficiency_map(self, num_words=10):
+        # TODO: Update to use new Words and Strokes tables
         cur = self.connection.cursor()
         cur.execute('SELECT word, stroke_duration FROM stroke_efficiency_log')
         rows = cur.fetchall()
@@ -128,16 +121,41 @@ class StrokeEfficiencyLog:
 
 class StrokeEfficiencyLogInitializer:
     def __init__(self):
-        pass
+        self.connection = get_connection()
 
     def initialize(self):
-        word_frequency_map = get_word_frequency_list_as_map()
-        connection = get_connection()
-        cur = connection.cursor()
+        self._ensure_tables_exist()
+        self._populate_words_table()
+
+    def _ensure_tables_exist(self):
+        cur = self.connection.cursor()
+        # Words table
         try:
-            cur.execute('SELECT * FROM WordFrequencyList LIMIT 1')
+            cur.execute('SELECT * FROM Words LIMIT 1')
             cur.fetchone()
         except sqlite3.OperationalError:
-            cur.execute('CREATE TABLE WordFrequencyList (word TEXT, frequency INTEGER)')
-            cur.execute('CREATE INDEX WordFrequencyListIndex ON WordFrequencyList(word)')
+            cur.execute("""CREATE TABLE Words (word_id INTEGER PRIMARY KEY,
+                                               word TEXT,
+                                               frequency INTEGER)')""")
+            cur.execute('CREATE INDEX WordIdIndex ON Words(word_id)')
+            cur.execute('CREATE INDEX WordIndex ON Words(word)')
             self.connection.commit()
+
+        # Strokes table
+        try:
+            cur.execute('SELECT * FROM Strokes LIMIT 1')
+            cur.fetchone()
+        except sqlite3.OperationalError:
+            cur.execute("""CREATE TABLE Strokes (stroke_id INTEGER PRIMARY KEY,
+                                                 FOREIGN KEY(word_id) REFERENCES Words(word_id),
+                                                 frequency INTEGER)""")
+            cur.execute('CREATE INDEX StrokedWordIndex ON Strokes(word_id)')
+            self.connection.commit()
+
+    def _populate_words_table(self):
+        word_frequency_map = get_word_frequency_list_as_map()
+        cur = self.connection.cursor()
+        for word, frequency in word_frequency_map:
+            t = (word, frequency)
+            cur.execute('INTERT INTO Words (word, frequency) VALUES (?, ?)', t)
+        self.connection.commit()
