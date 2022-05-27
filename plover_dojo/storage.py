@@ -6,6 +6,8 @@ from datetime import date
 from statistics import mean
 from time import time
 
+from plover_dojo.wikipedia_word_frequency.word_frequency_list_manager import get_word_frequency_list_as_map
+
 connection = None
 
 HOME = os.environ['HOME']
@@ -123,9 +125,19 @@ class StrokeEfficiencyLog:
     def _get_words_stroked_on_day(self, day):
         pass
 
+
 class StrokeEfficiencyLogInitializer:
     def __init__(self):
         pass
 
     def initialize(self):
-        pass
+        word_frequency_map = get_word_frequency_list_as_map()
+        connection = get_connection()
+        cur = connection.cursor()
+        try:
+            cur.execute('SELECT * FROM WordFrequencyList LIMIT 1')
+            cur.fetchone()
+        except sqlite3.OperationalError:
+            cur.execute('CREATE TABLE WordFrequencyList (word TEXT, frequency INTEGER)')
+            cur.execute('CREATE INDEX WordFrequencyListIndex ON WordFrequencyList(word)')
+            self.connection.commit()
