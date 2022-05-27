@@ -113,12 +113,12 @@ class StrokeEfficiencyLog:
 
 
 class StrokeEfficiencyLogInitializer:
+    # TODO: Make these class methods
     def __init__(self):
         self.connection = get_connection()
 
     def initialize(self):
         self._ensure_tables_exist()
-        self._populate_words_table()
 
     def _ensure_tables_exist(self):
         cur = self.connection.cursor()
@@ -129,10 +129,14 @@ class StrokeEfficiencyLogInitializer:
         except sqlite3.OperationalError:
             cur.execute("""CREATE TABLE Words (word_id INTEGER PRIMARY KEY,
                                                word TEXT,
-                                               frequency INTEGER)')""")
+                                               frequency INTEGER)""")
             cur.execute('CREATE INDEX WordIdIndex ON Words(word_id)')
             cur.execute('CREATE INDEX WordIndex ON Words(word)')
             self.connection.commit()
+
+            # since table didn't exist, need to
+            # populate table
+            self._populate_words_table()
 
         # Strokes table
         try:
@@ -140,16 +144,17 @@ class StrokeEfficiencyLogInitializer:
             cur.fetchone()
         except sqlite3.OperationalError:
             cur.execute("""CREATE TABLE Strokes (stroke_id INTEGER PRIMARY KEY,
-                                                 FOREIGN KEY(word_id) REFERENCES Words(word_id),
+                                                 word_id INT,
                                                  timestamp REAL,
-                                                 stroke_duration REAL)""")
+                                                 stroke_duration REAL,
+                                                 FOREIGN KEY(word_id) REFERENCES Words(word_id))""")
             cur.execute('CREATE INDEX StrokedWordIndex ON Strokes(word_id)')
             self.connection.commit()
 
     def _populate_words_table(self):
         word_frequency_map = get_word_frequency_list_as_map()
         cur = self.connection.cursor()
-        for word, frequency in word_frequency_map:
+        for word, frequency in word_frequency_map.items():
             t = (word, frequency)
-            cur.execute('INTERT INTO Words (word, frequency) VALUES (?, ?)', t)
+            cur.execute('INSERT INTO Words (word, frequency) VALUES (?, ?)', t)
         self.connection.commit()
