@@ -19,12 +19,17 @@ class StrokeEfficiencyLog(DojoPlugin):
         self.resumed_chording = None
         self.previous_stroke = None
         self.latest_stroke = None
-        self.activity_log = storage.ActivityLog()
+        self.stroke_efficiency_log = storage.StrokeEfficiencyLog()
+
+        with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
+            f.write(f'Stroke Efficiency Log is up and running! 🎉\n')
 
     def on_translated(self, old, new):
-        pass
+        if len(new) == 0:
+            return
 
-    def on_stroked(self, stroke):
+        word = new[0].word
+
         if self.resumed_chording is None:
             self.resumed_chording = self.previous_stroke = self.latest_stroke = datetime.now()
             return
@@ -41,4 +46,9 @@ class StrokeEfficiencyLog(DojoPlugin):
             return
 
         # record time it took to make last stroke
-        storage.
+        self.stroke_efficiency_log.add_stroke(word, gap_between_strokes)
+        with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
+            f.write(f'Stroked {word} in {gap_between_strokes:.2f}\n')
+
+    def on_stroked(self, stroke):
+        pass
