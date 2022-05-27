@@ -20,9 +20,18 @@ class StrokeEfficiencyLog(DojoPlugin):
         self.previous_stroke = None
         self.latest_stroke = None
         self.stroke_efficiency_log = storage.StrokeEfficiencyLog()
+        self.words_written_this_session = 0
 
         with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
             f.write(f'Stroke Efficiency Log is up and running! 🎉\n')
+
+    def _log_efficiency_report(self):
+        efficiency_map = self.stroke_efficiency_log.get_simple_efficiency_map()
+
+
+        with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
+            f.write(f'\n')
+
 
     def on_translated(self, old, new):
         if len(new) == 0:
@@ -37,6 +46,8 @@ class StrokeEfficiencyLog(DojoPlugin):
             self.previous_stroke = self.latest_stroke
             self.latest_stroke = datetime.now()
 
+        self.words_written_this_session += 1
+
         # time in seconds (expressed as a float; includes fractions of a second)
         gap_between_strokes = (self.latest_stroke - self.previous_stroke).total_seconds()
 
@@ -49,6 +60,9 @@ class StrokeEfficiencyLog(DojoPlugin):
         self.stroke_efficiency_log.add_stroke(word, gap_between_strokes)
         with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
             f.write(f'Stroked {word} in {gap_between_strokes:.2f}\n')
+
+        if self.words_written_this_session % 20 == 0:
+            self._log_efficiency_report()
 
     def on_stroked(self, stroke):
         pass

@@ -3,6 +3,7 @@
 import os
 import sqlite3
 from datetime import date
+from statistics import mean
 from time import time
 
 connection = None
@@ -95,3 +96,36 @@ class StrokeEfficiencyLog:
         t = (timestamp or time(), stroke_duration, word)
         cur.execute('INSERT INTO stroke_efficiency_log VALUES (?, ?, ?)', t)
         self.connection.commit()
+
+    def get_simple_efficiency_map(self, num_words=10):
+        cur = self.connection.cursor()
+        cur.execute('SELECT word, stroke_duration FROM stroke_efficiency_log')
+        rows = cur.fetchall()
+
+        efficiency_map = {}
+        for word, stroke_duration in rows:
+            efficiency_map.setdefault(word, [])
+            efficiency_map[word].append(stroke_duration)
+        avg_efficiency_map = {}
+        for word, stroke_durations in efficiency_map:
+            avg_efficiency_map[word] = mean(stroke_durations)
+        return avg_efficiency_map
+
+    def get_most_costly_words(self, num_words=10):
+        """Words are rank by 'cost' by finding the product of
+           - frequency of the word
+           - average efficiency with stroking the word
+             .. with more recently stroked words being given
+                greater weight
+        """
+        pass
+
+    def _get_words_stroked_on_day(self, day):
+        pass
+
+class StrokeEfficiencyLogInitializer:
+    def __init__(self):
+        pass
+
+    def initialize(self):
+        pass
