@@ -107,6 +107,7 @@ class StrokeEfficiencyLog:
                               AVG(Strokes.stroke_duration) as AverageDuration
                          FROM Words
                          JOIN Strokes ON Words.word_id = Strokes.word_id
+                         GROUP BY Words.word
                     """)
         rows = cur.fetchall()
         return rows
