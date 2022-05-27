@@ -84,41 +84,32 @@ class StrokeEfficiencyLog:
 
     def add_stroke(self, word, stroke_duration, timestamp=None):
         """Note how long a stroke took. If `timestamp` is omitted,
-        method uses the current time."""
+        method uses the current time.
+
+        Returns True if entry was added successfully, False
+        otherwise."""
         cur = self.connection.cursor()
         t = (timestamp or time(), stroke_duration, word)
-        cur.execute("""INSERT INTO Strokes(word_id, timestamp, stroke_duration)
-                         SELECT Words.word_id, ?, ?
-                         FROM Words
-                         WHERE Words.word = ? LIMIT 1""", t)
-        self.connection.commit()
+        try:
+            cur.execute("""INSERT INTO Strokes(word_id, timestamp, stroke_duration)
+                            SELECT Words.word_id, ?, ?
+                            FROM Words
+                            WHERE Words.word = ? LIMIT 1""", t)
+            self.connection.commit()
+            return True
+        except Exception:
+            return False
 
-    def get_simple_efficiency_map(self, num_words=10):
-        # TODO: Update to use new Words and Strokes tables
+    def get_average_speed_and_frequency_for_stroked_words(self):
         cur = self.connection.cursor()
-        cur.execute('SELECT word, stroke_duration FROM stroke_efficiency_log')
+        cur.execute("""SELECT Words.word,
+                              Words.frequency,
+                              AVG(Strokes.stroke_duration) as AverageDuration
+                         FROM Words
+                         JOIN Strokes ON Words.word_id = Strokes.word_id
+                    """)
         rows = cur.fetchall()
-
-        efficiency_map = {}
-        for word, stroke_duration in rows:
-            efficiency_map.setdefault(word, [])
-            efficiency_map[word].append(stroke_duration)
-        avg_efficiency_map = {}
-        for word, stroke_durations in efficiency_map:
-            avg_efficiency_map[word] = mean(stroke_durations)
-        return avg_efficiency_map
-
-    def get_most_costly_words(self, num_words=10):
-        """Words are rank by 'cost' by finding the product of
-           - frequency of the word
-           - average efficiency with stroking the word
-             .. with more recently stroked words being given
-                greater weight
-        """
-        pass
-
-    def _get_words_stroked_on_day(self, day):
-        pass
+        return rows
 
 
 class StrokeEfficiencyLogInitializer:
