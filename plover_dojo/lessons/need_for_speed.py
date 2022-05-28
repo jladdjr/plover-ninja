@@ -66,8 +66,7 @@ your overall efficiency. Here are some tips for speed practice:
   hesitation start to relax, and you can feel that you can stroke
   the word with greater ease.
 - Be patient with yourself! Smoothing out speed bumps is about slow,
-  careful work. Let speed be a byproduct of this careful work, not
-  the thing you seek directly.
+  careful work. Let speed be a byproduct of this careful work.
 
 You can do it!!!
 
