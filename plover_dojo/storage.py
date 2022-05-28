@@ -177,3 +177,28 @@ def get_most_common_words_that_have_not_been_used_yet(num_words=5):
                    LIMIT ?""", t)
     words = cur.fetchall()
     return words
+
+def get_rarely_used_words(num_words=10, threshold=100):
+    """Returns list of words that have been used less than
+    `threshold` number of times. Scans words according
+    to their general frequency of use.
+
+    Returns list of tuples where each tuple contains:
+    - Count of strokes
+    - Word frequency
+    - Word
+    """
+    connection = get_connection()
+    cur = connection.cursor()
+
+    t = (num_words, threshold)
+    cur.execute("""SELECT COUNT(Strokes.stroke_id) as StrokeCount,
+                        Words.frequency,
+                        Words.word
+                        FROM Strokes
+                        JOIN Words ON Strokes.word_id = Words.word_id
+                        GROUP BY Strokes.word_id
+                        ORDER BY Words.frequency DESC
+                """)
+    words = cur.fetchall()
+    return words
