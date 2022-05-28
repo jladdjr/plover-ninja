@@ -44,8 +44,8 @@ class RememberMe:
             text = f"""Dojo Lesson
 {report_text_today}
 
-You've seen this words, but they're still pretty fresh.
-Take some time getting to know these a bit better!
+You've seen these words, but they're still pretty fresh.
+Take some time getting to know them a bit better!
 
 {word_list}
 
