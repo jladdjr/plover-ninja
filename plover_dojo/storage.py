@@ -156,7 +156,24 @@ class StrokeEfficiencyLogInitializer:
     def _populate_words_table(self):
         word_frequency_map = get_word_frequency_list_as_map()
         cur = self.connection.cursor()
-        for word, frequency in word_frequency_map.items():
+        for frequency, word in word_frequency_map.items():
             t = (word, frequency)
             cur.execute('INSERT INTO Words (word, frequency) VALUES (?, ?)', t)
         self.connection.commit()
+
+
+###################################################3
+# Lessons
+
+def get_most_common_words_that_have_not_been_used_yet(num_words=5):
+    connection = get_connection()
+    cur = connection.cursor()
+
+    t = (num_words, )
+    cur.execute("""SELECT word_id, word FROM Words
+                   WHERE word_id NOT IN
+                     (SELECT word_id FROM Strokes)
+                   ORDER BY word_id ASC
+                   LIMIT ?""", t)
+    words = cur.fetchall()
+    return words

@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from plover_dojo.lessons.make_a_new_friend import MakeANewFriend
 from plover_dojo.plugins.dojo_plugin import DojoPlugin
 from plover_dojo import storage
 
@@ -24,6 +25,11 @@ class StrokeEfficiencyLog(DojoPlugin):
 
         with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
             f.write(f'Stroke Efficiency Log is up and running! 🎉\n')
+
+        # TODO: Move lesson creation somewhere else?
+        # Create a lesson!
+        MakeANewFriend().make_lesson()
+
 
     def _log_efficiency_report(self):
         efficiency_map = self.stroke_efficiency_log.get_average_speed_and_frequency_for_stroked_words()
