@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from plover_dojo.lessons.make_a_new_friend import MakeANewFriend
+from plover_dojo.lessons.need_for_speed import NeedForSpeed
 from plover_dojo.lessons.remember_me import RememberMe
 from plover_dojo.plugins.dojo_plugin import DojoPlugin
 from plover_dojo import storage
@@ -31,6 +32,7 @@ class StrokeEfficiencyLog(DojoPlugin):
         # Create a lesson!
         MakeANewFriend().make_lesson()
         RememberMe().make_lesson()
+        NeedForSpeed().make_lesson()
 
 
     def _log_efficiency_report(self):

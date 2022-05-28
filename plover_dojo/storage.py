@@ -209,7 +209,7 @@ def get_slowest_stroked_words(num_words=10):
     cur = connection.cursor()
 
     t = (num_words,)
-    cur.execute("""SELECT Words.frequency,
+    cur.execute("""SELECT Words.word_id,
                           Words.word,
                           AVG(Strokes.stroke_duration) as AverageDuration
                           FROM Words
