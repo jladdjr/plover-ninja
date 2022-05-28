@@ -191,15 +191,16 @@ def get_rarely_used_words(num_words=10, threshold=100):
     connection = get_connection()
     cur = connection.cursor()
 
-    t = (num_words, threshold)
+    t = (num_words, )
     cur.execute("""SELECT COUNT(Strokes.stroke_id) as StrokeCount,
-                        Words.frequency,
+                        Words.word_id,
                         Words.word
                         FROM Strokes
                         JOIN Words ON Strokes.word_id = Words.word_id
                         GROUP BY Strokes.word_id
                         ORDER BY Words.frequency DESC
-                """)
+                        LIMIT ?
+                """, t)
     words = cur.fetchall()
     return words
 
@@ -215,6 +216,7 @@ def get_slowest_stroked_words(num_words=10):
                           JOIN Strokes ON Words.word_id = Strokes.word_id
                           GROUP BY Strokes.word_id
                           ORDER BY AverageDuration DESC
-                          LIMIT ?""", t)
+                          LIMIT ?
+                """, t)
     words = cur.fetchall()
     return words
