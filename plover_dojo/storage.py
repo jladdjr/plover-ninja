@@ -202,3 +202,19 @@ def get_rarely_used_words(num_words=10, threshold=100):
                 """)
     words = cur.fetchall()
     return words
+
+def get_slowest_stroked_words(num_words=10):
+    connection = get_connection()
+    cur = connection.cursor()
+
+    t = (num_words,)
+    cur.execute("""SELECT Words.frequency,
+                          Words.word,
+                          AVG(Strokes.stroke_duration) as AverageDuration
+                          FROM Words
+                          JOIN Strokes ON Words.word_id = Strokes.word_id
+                          GROUP BY Strokes.word_id
+                          ORDER BY AverageDuration DESC
+                          LIMIT ?""", t)
+    words = cur.fetchall()
+    return words
