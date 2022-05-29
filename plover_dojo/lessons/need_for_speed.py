@@ -13,12 +13,14 @@ class NeedForSpeed:
         # Returns tuples containing:
         # - word_id
         # - word
-        # - average stroke duration
+        # - practice weight
+        # - average duration
+        # - weighted duration
         average_stroke_duration_tuples = get_slowest_stroked_words()
 
         # TODO: make this a util function
         longest_word_len = 0
-        for _, word, _ in average_stroke_duration_tuples:
+        for _, word, _, _, _ in average_stroke_duration_tuples:
             word_len = len(word)
             if word_len > longest_word_len:
                 longest_word_len = word_len
@@ -26,15 +28,15 @@ class NeedForSpeed:
 
         # TODO: make this a util function
         longest_word_id_len = 0
-        for word_id, _, _ in average_stroke_duration_tuples:
+        for word_id, _, _, _, _ in average_stroke_duration_tuples:
             word_id_len = len(str(word_id))
             if word_id_len > longest_word_id_len:
                 longest_word_id_len = word_id_len
         word_id_padding = longest_word_id_len + 5
 
         word_list = []
-        for word_id, word, average_stroke_duration in average_stroke_duration_tuples:
-            text = f'{word:{word_padding}} word #{word_id:<{word_id_padding}} avg stroke duration: {average_stroke_duration:.3f}'
+        for word_id, word, practice_weight, average_duration, weighted_duration in average_stroke_duration_tuples:
+            text = f'{word:{word_padding}} word #{word_id:<{word_id_padding}} avg stroke duration: {average_duration:.3f}  weighted duration: {weighted_duration:.3f}'
             word_list.append(text)
         word_list = '\n'.join(word_list)
 

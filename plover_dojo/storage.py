@@ -217,11 +217,13 @@ def get_slowest_stroked_words(num_words=10):
     t = (num_words,)
     cur.execute("""SELECT Words.word_id,
                           Words.word,
-                          AVG(Strokes.stroke_duration) as AverageDuration
+                          Words.practice_weight,
+                          AVG(Strokes.stroke_duration) as AverageDuration,
+                          AVG(Strokes.stroke_duration) * Words.practice_weight as WeightedDuration
                           FROM Words
                           JOIN Strokes ON Words.word_id = Strokes.word_id
                           GROUP BY Strokes.word_id
-                          ORDER BY AverageDuration DESC
+                          ORDER BY WeightedDuration DESC
                           LIMIT ?
                 """, t)
     words = cur.fetchall()
