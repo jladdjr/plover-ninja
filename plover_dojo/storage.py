@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import math
 import os
 import sqlite3
 from datetime import date
@@ -131,7 +132,8 @@ class StrokeEfficiencyLogInitializer:
         except sqlite3.OperationalError:
             cur.execute("""CREATE TABLE Words (word_id INTEGER PRIMARY KEY,
                                                word TEXT,
-                                               frequency INTEGER)""")
+                                               frequency INTEGER,
+                                               practice_weight REAL)""")
             cur.execute('CREATE INDEX WordIdIndex ON Words(word_id)')
             cur.execute('CREATE INDEX WordIndex ON Words(word)')
             self.connection.commit()
@@ -154,11 +156,15 @@ class StrokeEfficiencyLogInitializer:
             self.connection.commit()
 
     def _populate_words_table(self):
+        def get_practice_weight(t):
+            t = int(t)
+            return math.log(t, 1.88265334)
+
         word_frequency_map = get_word_frequency_list_as_map()
         cur = self.connection.cursor()
-        for frequency, word in word_frequency_map.items():
-            t = (word, frequency)
-            cur.execute('INSERT INTO Words (word, frequency) VALUES (?, ?)', t)
+        for word, frequency in word_frequency_map.items():
+            t = (word, frequency, get_practice_weight(frequency))
+            cur.execute('INSERT INTO Words (word, frequency, practice_weight) VALUES (?, ?, ?)', t)
         self.connection.commit()
 
 
