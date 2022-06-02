@@ -3,7 +3,9 @@ class DojoPlugin:
         pass
 
     def on_translated(self, old, new):
-        return NotImplemented
+        # Do nothing by default
+        pass
 
     def on_stroked(self, stroke):
-        return NotImplemented
+        # Do nothing by default
+        pass

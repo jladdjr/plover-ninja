@@ -1,4 +1,7 @@
-class DojoRepl:
+from plover_dojo.plugins.dojo_plugin import DojoPlugin
+
+
+class DojoRepl(DojoPlugin):
     def __init__(self, engine):
         self.engine = engine
         self.listener_manager = ListenerManager()
@@ -44,10 +47,11 @@ class ListenerManager:
 # Listeners
 
 class WaitForPhrase:
+    """WaitForPhrase waits for a *case-sensitive* phrase!"""
     def __init__(self, phrase, callback):
         self.phrase = phrase
         self.received_words = []
-        self.callback = callbock
+        self.callback = callback
 
     def on_event_occurred(self, event):
         if 'new_word' not in event:
@@ -59,9 +63,19 @@ class WaitForPhrase:
         if len(self.received_words) > len(self.phrase):
             self.received_words = self.received_words[1:]
 
-        if self.received_words == self.phrase
-            self.callback()
+        if self.received_words == self.phrase:
+            self.callback.run()
 
+
+##############################
+# Callbacks
+
+class GreetingCallback:
+    def __init__(self, engine):
+        self.engine = engine
+
+    def run(self):
+        self.engine._send_string(f'Howdy!🐦🥋\n')
 
 ##############################
 # States
@@ -74,17 +88,11 @@ class State:
     def load(self):
         raise NotImplementedError
 
-    def _get_send_string_callable(self, string):
-        engine = self.engine
-        def _callable():
-            engine._send_string(f'{string}\n')
-        return _callable
-
 
 class WelcomeToTheDojo(State):
     def load(self):
-        callback = self._get_send_string_callable('Welcome to the Dojo! 🐦🥋')
-        phrase = ['i', 'am', 'ready', 'to', 'practice', '', '', '']
+        phrase = ['I', 'am', 'ready', 'to', 'practice', '', '', '']
+        callback = GreetingCallback(self.engine)
         wait_listener = WaitForPhrase(phrase, callback)
 
         self.listener_manager.add_listener('welcome_state.interactive_session_requested',
