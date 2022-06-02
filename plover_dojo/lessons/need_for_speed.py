@@ -35,9 +35,11 @@ class NeedForSpeed:
         word_id_padding = longest_word_id_len + 5
 
         word_list = []
+        detailed_word_list = []
         for word_id, word, practice_weight, average_duration, weighted_duration in average_stroke_duration_tuples:
             text = f'{word:{word_padding}} word #{word_id:<{word_id_padding}} avg stroke duration: {average_duration:.3f}  weighted duration: {weighted_duration:.3f}'
-            word_list.append(text)
+            detailed_word_list.append(text)
+            word_list.append(word)
         word_list = '\n'.join(word_list)
 
         today = date.today()
@@ -72,7 +74,7 @@ your overall efficiency. Here are some tips for speed practice:
 
 You can do it!!!
 
-{word_list}
+{detailed_word_list}
 
 🐦🥋
 """
@@ -80,10 +82,8 @@ You can do it!!!
 
         if mini_lesson:
             text = f"""Need For Speed words!
-
+---------------------
 {word_list}
-
-🐦🥋
 """
             return text
         return text

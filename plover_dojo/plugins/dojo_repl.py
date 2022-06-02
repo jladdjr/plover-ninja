@@ -1,5 +1,6 @@
 from plover_dojo.plugins.dojo_plugin import DojoPlugin
 from plover_dojo.lessons.need_for_speed import NeedForSpeed
+from plover_dojo.lessons.make_a_new_friend import MakeANewFriend
 
 
 class DojoRepl(DojoPlugin):
@@ -77,6 +78,11 @@ class GreetingCallback:
 
     def run(self):
         #self.engine._send_string(f'Howdy!🐦🥋\n')
+
+        lesson_text = MakeANewFriend().make_lesson(mini_lesson=True)
+        self.engine._send_string(lesson_text)
+
+        self.engine._send_string('\n')
 
         lesson_text = NeedForSpeed().make_lesson(mini_lesson=True)
         self.engine._send_string(lesson_text)

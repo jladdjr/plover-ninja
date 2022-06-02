@@ -9,7 +9,7 @@ class MakeANewFriend:
         pass
 
     # TODO: Make this a class method?
-    def make_lesson(self):
+    def make_lesson(self, mini_lesson = False):
         frequency_word_tuples = get_most_common_words_that_have_not_been_used_yet()
         longest_word_len = 0
         for _, word in frequency_word_tuples:
@@ -19,9 +19,11 @@ class MakeANewFriend:
         padding = longest_word_len + 5
 
         word_list = []
+        detailed_word_list = []
         for frequency, word in frequency_word_tuples:
             text = f'{word:{padding}} word #{frequency}'
-            word_list.append(text)
+            detailed_word_list.append(text)
+            word_list.append(word)
         word_list = '\n'.join(word_list)
 
         today = date.today()
@@ -35,8 +37,15 @@ class MakeANewFriend:
 Make some new friends today! Here are the most common words
 that haven't appeared in your writing yet. Give them a try!
 
-{word_list}
+{detailed_word_list}
 
 🐦🥋
 """
             f.write(text)
+
+        if mini_lesson:
+            return f"""New Words!
+----------
+{word_list}
+"""
+        return text
