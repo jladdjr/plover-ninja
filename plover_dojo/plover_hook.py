@@ -1,11 +1,13 @@
 from plover_dojo.plugins.dojo_test import DojoTest
 from plover_dojo.plugins.activity_log import ActivityLog
+from plover_dojo.plugins.dojo_repl import DojoRepl
 from plover_dojo.plugins.stroke_efficiency_log import StrokeEfficiencyLog
 
 import logging
 logger = logging.getLogger(__name__)
 
-DOJO_PLUGINS = [DojoTest, ActivityLog, StrokeEfficiencyLog]
+DOJO_PLUGINS = [DojoTest, ActivityLog, StrokeEfficiencyLog,
+                DojoRepl]
 
 
 class Main:
