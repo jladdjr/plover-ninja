@@ -9,7 +9,7 @@ class NeedForSpeed:
         pass
 
     # TODO: Make this a class method?
-    def make_lesson(self):
+    def make_lesson(self, mini_lesson=False):
         # Returns tuples containing:
         # - word_id
         # - word
@@ -77,3 +77,13 @@ You can do it!!!
 🐦🥋
 """
             f.write(text)
+
+        if mini_lesson:
+            text = f"""Need For Speed words!
+
+{word_list}
+
+🐦🥋
+"""
+            return text
+        return text
