@@ -89,6 +89,9 @@ class StrokeEfficiencyLog:
 
         Returns True if entry was added successfully, False
         otherwise."""
+        if word is None:
+            return
+
         cur = self.connection.cursor()
         t = (timestamp or time(), stroke_duration, word)
         try:
