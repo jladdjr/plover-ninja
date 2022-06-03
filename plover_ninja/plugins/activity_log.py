@@ -1,13 +1,13 @@
 from datetime import datetime
 
-from plover_dojo.plugins.dojo_plugin import DojoPlugin
-from plover_dojo import storage
+from plover_ninja.plugins.ninja_plugin import NinjaPlugin
+from plover_ninja import storage
 
 
 CHORDING_PAUSED_IN_SECONDS = 5
 
 
-class ActivityLog(DojoPlugin):
+class ActivityLog(NinjaPlugin):
 
     def __init__(self, engine):
         """
@@ -27,7 +27,7 @@ class ActivityLog(DojoPlugin):
     def on_stroked(self, stroke):
         if self.resumed_chording is None:
             self.resumed_chording = self.previous_stroke = self.latest_stroke = datetime.now()
-            with open('/tmp/dojo_activity.txt', 'a') as f:
+            with open('/tmp/ninja_activity.txt', 'a') as f:
                 f.write(f'\n\n-------------------------------\nWelcome back!\n\n')
             return
         else:
@@ -41,14 +41,14 @@ class ActivityLog(DojoPlugin):
             previous_activity = int((self.previous_stroke - self.resumed_chording).total_seconds())
             total_active_seconds = self.activity_log.add_activity(previous_activity)
 
-            with open('/tmp/dojo_activity.txt', 'a') as f:
+            with open('/tmp/ninja_activity.txt', 'a') as f:
                 f.write(f'\n\nUpdate: Added another {previous_activity} seconds\n')
                 f.write(f'Total active minutes: {total_active_seconds // 60}\n\n')
 
             self.resumed_chording = self.latest_stroke
         else:
             current_active_session_duration = int((self.latest_stroke - self.resumed_chording).total_seconds())
-            with open('/tmp/dojo_activity.txt', 'a') as f:
+            with open('/tmp/ninja_activity.txt', 'a') as f:
                 f.write(f'.')
 
         # TODO: Capture time that occured at end of plover session

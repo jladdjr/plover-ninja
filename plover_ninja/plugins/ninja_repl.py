@@ -1,15 +1,15 @@
-from plover_dojo.plugins.dojo_plugin import DojoPlugin
-from plover_dojo.lessons.need_for_speed import NeedForSpeed
-from plover_dojo.lessons.make_a_new_friend import MakeANewFriend
+from plover_ninja.plugins.ninja_plugin import NinjaPlugin
+from plover_ninja.lessons.need_for_speed import NeedForSpeed
+from plover_ninja.lessons.make_a_new_friend import MakeANewFriend
 
 
-class DojoRepl(DojoPlugin):
+class NinjaRepl(NinjaPlugin):
     def __init__(self, engine):
         self.engine = engine
         self.listener_manager = ListenerManager()
 
         # Load initial state
-        WelcomeToTheDojo(self.engine, self.listener_manager).load()
+        WelcomeToNinjaTraining(self.engine, self.listener_manager).load()
 
     def on_translated(self, old, new):
         if len(new) == 0:
@@ -99,7 +99,7 @@ class State:
         raise NotImplementedError
 
 
-class WelcomeToTheDojo(State):
+class WelcomeToNinjaTraining(State):
     def load(self):
         phrase = ['I', 'am', 'ready', 'to', 'practice', '', '', '']
         callback = GreetingCallback(self.engine)

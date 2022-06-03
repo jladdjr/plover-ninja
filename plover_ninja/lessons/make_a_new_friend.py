@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from plover_dojo.storage import get_most_common_words_that_have_not_been_used_yet
+from plover_ninja.storage import get_most_common_words_that_have_not_been_used_yet
 
 class MakeANewFriend:
     def __init__(self):
@@ -31,7 +31,7 @@ class MakeANewFriend:
         report_text_today = today.strftime('%m/%d/%Y')
 
         with open(f'/tmp/{file_name_today}_make_a_new_friend.txt', 'w') as f:
-            text = f"""Dojo Lesson
+            text = f"""Ninja Lesson
 {report_text_today}
 
 Make some new friends today! Here are the most common words

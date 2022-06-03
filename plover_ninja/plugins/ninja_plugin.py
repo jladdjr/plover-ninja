@@ -1,4 +1,4 @@
-class DojoPlugin:
+class NinjaPlugin:
     def __init__(self, engine):
         pass
 

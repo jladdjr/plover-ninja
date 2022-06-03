@@ -1,16 +1,16 @@
 from datetime import datetime
 
-from plover_dojo.lessons.make_a_new_friend import MakeANewFriend
-from plover_dojo.lessons.need_for_speed import NeedForSpeed
-from plover_dojo.lessons.remember_me import RememberMe
-from plover_dojo.plugins.dojo_plugin import DojoPlugin
-from plover_dojo import storage
+from plover_ninja.lessons.make_a_new_friend import MakeANewFriend
+from plover_ninja.lessons.need_for_speed import NeedForSpeed
+from plover_ninja.lessons.remember_me import RememberMe
+from plover_ninja.plugins.ninja_plugin import NinjaPlugin
+from plover_ninja import storage
 
 
 CHORDING_PAUSED_IN_SECONDS = 5
 
 
-class StrokeEfficiencyLog(DojoPlugin):
+class StrokeEfficiencyLog(NinjaPlugin):
 
     def __init__(self, engine):
         """
@@ -25,7 +25,7 @@ class StrokeEfficiencyLog(DojoPlugin):
         self.stroke_efficiency_log = storage.StrokeEfficiencyLog()
         self.words_written_this_session = 0
 
-        with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
+        with open('/tmp/ninja-stroke-efficiency.txt', 'a') as f:
             f.write(f'Stroke Efficiency Log is up and running! 🎉\n')
 
         # TODO: Move lesson creation somewhere else?
@@ -38,7 +38,7 @@ class StrokeEfficiencyLog(DojoPlugin):
     def _log_efficiency_report(self):
         efficiency_map = self.stroke_efficiency_log.get_average_speed_and_frequency_for_stroked_words()
 
-        with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
+        with open('/tmp/ninja-stroke-efficiency.txt', 'a') as f:
             f.write('\n----------------------------------\n')
             f.write('New stroke efficiency results! 🎉\n\n')
             for word, _, avg_stroke_duration in efficiency_map:
@@ -71,7 +71,7 @@ class StrokeEfficiencyLog(DojoPlugin):
 
         # record time it took to make last stroke
         self.stroke_efficiency_log.add_stroke(word, gap_between_strokes)
-        with open('/tmp/dojo-stroke-efficiency.txt', 'a') as f:
+        with open('/tmp/ninja-stroke-efficiency.txt', 'a') as f:
             f.write(f'Stroked {word} in {gap_between_strokes:.2f}\n')
 
         if self.words_written_this_session % 50 == 0:

@@ -7,13 +7,13 @@ from datetime import date
 from statistics import mean
 from time import time
 
-from plover_dojo.wikipedia_word_frequency.word_frequency_list_manager import get_word_frequency_list_as_map
+from plover_ninja.wikipedia_word_frequency.word_frequency_list_manager import get_word_frequency_list_as_map
 
 connection = None
 
 HOME = os.environ['HOME']
-DB_DIR = os.path.join(HOME, ".dojo")
-DB_FILE = os.path.join(DB_DIR, "dojo.db")
+DB_DIR = os.path.join(HOME, ".plover_ninja")
+DB_FILE = os.path.join(DB_DIR, "ninja.db")
 
 
 def get_connection():

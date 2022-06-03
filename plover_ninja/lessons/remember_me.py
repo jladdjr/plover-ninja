@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from plover_dojo.storage import get_rarely_used_words
+from plover_ninja.storage import get_rarely_used_words
 
 class RememberMe:
     def __init__(self):
@@ -41,7 +41,7 @@ class RememberMe:
         report_text_today = today.strftime('%m/%d/%Y')
 
         with open(f'/tmp/{file_name_today}_remember_me.txt', 'w') as f:
-            text = f"""Dojo Lesson
+            text = f"""Ninja Lesson
 {report_text_today}
 
 You've seen these words, but they're still pretty fresh.

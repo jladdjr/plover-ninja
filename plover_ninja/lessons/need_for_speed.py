@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from plover_dojo.storage import get_slowest_stroked_words
+from plover_ninja.storage import get_slowest_stroked_words
 
 class NeedForSpeed:
     def __init__(self):
@@ -47,7 +47,7 @@ class NeedForSpeed:
         report_text_today = today.strftime('%m/%d/%Y')
 
         with open(f'/tmp/{file_name_today}_need_for_speed.txt', 'w') as f:
-            text = f"""Dojo Lesson
+            text = f"""Ninja Lesson
 {report_text_today}
 
 Take these words out for some speed practice in order to boost
