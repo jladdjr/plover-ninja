@@ -92,6 +92,11 @@ class StrokeEfficiencyLog:
         if word is None:
             return
 
+        # Our corpus of words that we used to form the words
+        # table is case-insensitive, so the strokes we log
+        # will be, too
+        word = word.lower()
+
         cur = self.connection.cursor()
         t = (timestamp or time(), stroke_duration, word)
         try:
@@ -163,6 +168,7 @@ class StrokeEfficiencyLogInitializer:
             t = int(t)
             return math.log(t, 1.88265334)
 
+        # note that this returns only lower-case words
         word_frequency_map = get_word_frequency_list_as_map()
         cur = self.connection.cursor()
         for word, frequency in word_frequency_map.items():
