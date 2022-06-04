@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Plover Ninja
+one-off-scripts/stress_testing/test.db
