@@ -54,7 +54,7 @@ class ActivityLog:
         if no activity was logged for the day."""
         cur = self.connection.cursor()
         t = (day,)
-        cur.execute('SELECT * FROM activity_log where date=?', t)
+        cur.execute('SELECT * FROM activity_log WHERE date=?', t)
         activity = cur.fetchone()
         return activity
 
@@ -73,7 +73,7 @@ class ActivityLog:
         previous_activity = previous_activity_entry[1]
         total_activity = previous_activity + seconds
         t = (total_activity, today())
-        cur.execute('UPDATE activity_log SET active_seconds = ? where date = ?', t)
+        cur.execute('UPDATE activity_log SET active_seconds = ? WHERE date = ?', t)
         self.connection.commit()
         return total_activity
 
@@ -81,6 +81,7 @@ class ActivityLog:
 class StrokeEfficiencyLog:
     def __init__(self):
         self.connection = get_connection()
+        self.strokes_since_average_recomputed = 0
         StrokeEfficiencyLogInitializer().initialize()
 
     def add_stroke(self, word, stroke_duration, timestamp=None):
@@ -98,13 +99,27 @@ class StrokeEfficiencyLog:
         word = word.lower()
 
         cur = self.connection.cursor()
-        t = (timestamp or time(), stroke_duration, word)
         try:
+            t = (timestamp or time(), stroke_duration, word)
             cur.execute("""INSERT INTO Strokes(word_id, timestamp, stroke_duration)
                             SELECT Words.word_id, ?, ?
                             FROM Words
                             WHERE Words.word = ? LIMIT 1""", t)
+            # indicate that average stroke duration needs to
+            # be recalculated for this word
+            t = (word,)
+            cur.execute("""UPDATE Words
+                           SET average_stroke_duration_dirty_flag = 1
+                           WHERE word = ?""", t)
             self.connection.commit()
+
+            self.strokes_since_average_recomputed += 1
+
+            if self.strokes_since_average_recomputed > 100:
+                self.strokes_since_average_recomputed = 0
+                # TODO: add logging statement
+                update_average_stroke_duration()
+
             return True
         except Exception:
             return False
@@ -113,7 +128,7 @@ class StrokeEfficiencyLog:
         cur = self.connection.cursor()
         cur.execute("""SELECT Words.word,
                               Words.frequency,
-                              AVG(Strokes.stroke_duration) as AverageDuration
+                              AVG(Strokes.stroke_duration) AS AverageDuration
                          FROM Words
                          JOIN Strokes ON Words.word_id = Strokes.word_id
                          GROUP BY Words.word
@@ -138,10 +153,15 @@ class StrokeEfficiencyLogInitializer:
             cur.execute('SELECT * FROM Words LIMIT 1')
             cur.fetchone()
         except sqlite3.OperationalError:
+            # sqlite does not have a separate boolean data type;
+            # INTEGER is used instead
+            # https://www.sqlite.org/datatype3.html#boolean_datatype
             cur.execute("""CREATE TABLE Words (word_id INTEGER PRIMARY KEY,
                                                word TEXT,
                                                frequency INTEGER,
-                                               practice_weight REAL)""")
+                                               practice_weight REAL,
+                                               average_stroke_duration REAL DEFAULT NULL,
+                                               average_stroke_duration_dirty_flag INTEGER DEFAULT NULL)""")
             cur.execute('CREATE INDEX WordIdIndex ON Words(word_id)')
             cur.execute('CREATE INDEX WordIndex ON Words(word)')
             self.connection.commit()
@@ -207,7 +227,7 @@ def get_rarely_used_words(num_words=10, threshold=100):
     cur = connection.cursor()
 
     t = (num_words, )
-    cur.execute("""SELECT COUNT(Strokes.stroke_id) as StrokeCount,
+    cur.execute("""SELECT COUNT(Strokes.stroke_id) AS StrokeCount,
                         Words.word_id,
                         Words.word
                         FROM Strokes
@@ -223,24 +243,54 @@ def get_slowest_stroked_words(num_words=10):
     connection = get_connection()
     cur = connection.cursor()
 
-    # TODO: This queries starts to take longer than 1s after ~1.3m strokes
-    #       May want to precompute the average number of strokes to avoid
-    #       this.
-    #
-    #       Was unable to create an index that improved the performance of
-    #       the query. This may be because of how we're using AVG with
-    #       GROUPBY?
+    # update average stroke duration for
+    # any words where the `average_stroke_duration_dirty_flag`
+    # is TRUE
+    update_average_stroke_duration()
+
     t = (num_words,)
-    cur.execute("""SELECT Words.word_id,
-                          Words.word,
-                          Words.practice_weight,
-                          AVG(Strokes.stroke_duration) as AverageDuration,
-                          AVG(Strokes.stroke_duration) * Words.practice_weight as WeightedDuration
+    cur.execute("""SELECT word_id,
+                          word,
+                          practice_weight,
+                          average_stroke_duration,
+                          average_stroke_duration * Words.practice_weight AS WeightedDuration
                           FROM Words
-                          JOIN Strokes ON Words.word_id = Strokes.word_id
-                          GROUP BY Strokes.word_id
+                          WHERE NOT average_stroke_duration IS NULL
                           ORDER BY WeightedDuration DESC
                           LIMIT ?
                 """, t)
     words = cur.fetchall()
     return words
+
+def update_average_stroke_duration():
+    connection = get_connection()
+    cur = connection.cursor()
+
+    # get list of words where the average needs
+    # to be recomputed
+    cur.execute("""SELECT word_id
+                   FROM WORDS
+                   WHERE average_stroke_duration_dirty_flag = 1""")
+    res = cur.fetchall()
+    word_ids = tuple(t[0] for t in res)
+
+    # calculate average stroke duration
+    # There's got to be a better way to SELECT from
+    # a dynamic list
+    # https://stackoverflow.com/a/5766293
+    cur.execute(f"""SELECT word_id, AVG(stroke_duration)
+                     FROM Strokes
+                     WHERE word_id IN ({','.join(['?']*len(word_ids))})
+                     GROUP BY word_id
+                 """, word_ids)
+    res = cur.fetchall()
+
+    # save new averages
+    for word_id, avg in res:
+        t = (avg, word_id)
+        cur.execute("""UPDATE Words
+                        SET average_stroke_duration = ?,
+                            average_stroke_duration_dirty_flag = 0
+                        WHERE word_id = ?""", t)
+    # commit results
+    connection.commit()

@@ -56,10 +56,15 @@ def write_book():
             stroke_duration = random() * 4
             t = (timestamp, stroke_duration, word)
             cursor.execute("""INSERT INTO Strokes(word_id, timestamp, stroke_duration)
-                            SELECT Words.word_id, ?, ?
-                            FROM Words
-                            WHERE Words.word = ? LIMIT 1
-                        """, t)
+                              SELECT Words.word_id, ?, ?
+                              FROM Words
+                              WHERE Words.word = ? LIMIT 1
+                           """, t)
+            t = (word,)
+            cursor.execute("""UPDATE Words
+                              SET average_stroke_duration_dirty_flag = 1
+                              WHERE word = ?
+                           """, t)
             words_submitted += 1
             if words_submitted % 1000 == 0:
                 logger.info(f'Submitted {words_submitted}..')
@@ -75,13 +80,15 @@ def exercise_queries():
 
     print(f'get_most_common_words_that_have_not_been_used_yet: {t2-t1}')
 
+    # TODO: Set dirty flag to TRUE for 100 entries
+    storage.update_average_stroke_duration()
     t1 = time()
     storage.get_slowest_stroked_words()
     t2 = time()
 
     print(f'get_slowest_stroked_words(num_words: {t2-t1}')
 
-for i in range(3):
+for i in range(10):
     print(f'Trial {i+1}')
     write_book()
     exercise_queries()

@@ -18,6 +18,10 @@ class NeedForSpeed:
         # - weighted duration
         average_stroke_duration_tuples = get_slowest_stroked_words()
 
+        if len(average_stroke_duration_tuples) == 0:
+            return 'Cannot recommend any words for speedstudy; \n' + \
+                   'no words have been written yet!'
+
         # TODO: make this a util function
         longest_word_len = 0
         for _, word, _, _, _ in average_stroke_duration_tuples:
