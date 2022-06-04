@@ -1,0 +1,58 @@
+6/3/2022
+
+Each trial simulates writing War and Peace
+and then checking up on the key SQL queries
+that currently get used.
+
+Trial 1
+get_most_common_words_that_have_not_been_used_yet: 0.0002524852752685547
+get_slowest_stroked_words(num_words: 0.2607269287109375
+
+----------------------------------------------------------
+Trial 2
+get_most_common_words_that_have_not_been_used_yet: 0.00028705596923828125
+get_slowest_stroked_words(num_words: 0.5733382701873779
+
+----------------------------------------------------------
+Trial 3
+get_most_common_words_that_have_not_been_used_yet: 0.0002765655517578125
+get_slowest_stroked_words(num_words: 0.8696277141571045
+
+* By this point, the Strokes table has 1,296,444 rows
+
+----------------------------------------------------------
+Trial 4
+get_most_common_words_that_have_not_been_used_yet: 0.00028324127197265625
+get_slowest_stroked_words(num_words: 1.165977954864502
+
+----------------------------------------------------------
+Trial 5
+get_most_common_words_that_have_not_been_used_yet: 0.0002884864807128906
+get_slowest_stroked_words(num_words: 1.4860649108886719
+
+----------------------------------------------------------
+Trial 6
+get_most_common_words_that_have_not_been_used_yet: 0.00029778480529785156
+get_slowest_stroked_words(num_words: 1.8130621910095215
+
+----------------------------------------------------------
+Trial 7
+get_most_common_words_that_have_not_been_used_yet: 0.000308990478515625
+get_slowest_stroked_words(num_words: 2.1759252548217773
+
+----------------------------------------------------------
+Trial 8
+get_most_common_words_that_have_not_been_used_yet: 0.0003046989440917969
+get_slowest_stroked_words(num_words: 2.5484728813171387
+
+----------------------------------------------------------
+Trial 9
+get_most_common_words_that_have_not_been_used_yet: 0.0003094673156738281
+get_slowest_stroked_words(num_words: 2.8842482566833496
+
+----------------------------------------------------------
+Trial 10
+get_most_common_words_that_have_not_been_used_yet: 0.0002963542938232422
+get_slowest_stroked_words(num_words: 3.1619529724121094
+
+* By this point, the Strokes table has 4,321,480 rows

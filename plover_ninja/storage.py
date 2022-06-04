@@ -223,6 +223,13 @@ def get_slowest_stroked_words(num_words=10):
     connection = get_connection()
     cur = connection.cursor()
 
+    # TODO: This queries starts to take longer than 1s after ~1.3m strokes
+    #       May want to precompute the average number of strokes to avoid
+    #       this.
+    #
+    #       Was unable to create an index that improved the performance of
+    #       the query. This may be because of how we're using AVG with
+    #       GROUPBY?
     t = (num_words,)
     cur.execute("""SELECT Words.word_id,
                           Words.word,
