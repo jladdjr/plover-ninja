@@ -33,6 +33,49 @@ def today():
     d = date.today()
     return d.strftime("%Y-%m-%d")
 
+class SettingsManager:
+    def __init__(self):
+        self.connection = get_connection()
+        self._ensure_tables_exists()
+
+    def _ensure_tables_exists(self):
+        cur = self.connection.cursor()
+        try:
+            cur.execute('SELECT * FROM Settings LIMIT 1')
+            cur.fetchone()
+        except sqlite3.OperationalError:
+            cur.execute("""CREATE TABLE Settings (setting_id INTEGER PRIMARY KEY,
+                                                  name TEXT,
+                                                  value TEXT)""")
+            self.connection.commit()
+
+    def get_setting(self, name):
+        """Returns setting if found, otherwise returns `None`"""
+        cur = self.connection.cursor()
+        t = (name,)
+        cur.execute("""SELECT value FROM Settings
+                       WHERE name = ?""", t)
+        res = cur.fetchone()
+        if res is None:
+            return None
+        return res[0]
+
+    def setting_exists(self, name):
+        return self.get_setting(name) is not None
+
+    def set_setting(self, name, value):
+        cur = self.connection.cursor()
+        if self.setting_exists(name):
+            t = (value, name)
+            cur.execute("""UPDATE Settings
+                           SET value = ?
+                           WHERE name = ?""", t)
+        else:
+            t = (name, value)
+            cur.execute("""INSERT INTO Settings(name, value)
+                           VALUES (?, ?)""", t)
+        self.connection.commit()
+
 
 class ActivityLog:
     def __init__(self):
