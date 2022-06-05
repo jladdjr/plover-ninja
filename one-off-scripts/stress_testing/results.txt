@@ -1,58 +1,56 @@
-6/3/2022
+6/4/2022
 
 Each trial simulates writing War and Peace
 and then checking up on the key SQL queries
 that currently get used.
 
 Trial 1
-get_most_common_words_that_have_not_been_used_yet: 0.0002524852752685547
-get_slowest_stroked_words(num_words: 0.2607269287109375
+get_most_common_words_that_have_not_been_used_yet: 0.00025343894958496094
+get_slowest_stroked_words(num_words: 0.02322673797607422
 
 ----------------------------------------------------------
 Trial 2
-get_most_common_words_that_have_not_been_used_yet: 0.00028705596923828125
-get_slowest_stroked_words(num_words: 0.5733382701873779
+get_most_common_words_that_have_not_been_used_yet: 0.00018286705017089844
+get_slowest_stroked_words(num_words: 0.023073911666870117
 
 ----------------------------------------------------------
 Trial 3
-get_most_common_words_that_have_not_been_used_yet: 0.0002765655517578125
-get_slowest_stroked_words(num_words: 0.8696277141571045
-
-* By this point, the Strokes table has 1,296,444 rows
+get_most_common_words_that_have_not_been_used_yet: 0.00018072128295898438
+get_slowest_stroked_words(num_words: 0.023003339767456055
 
 ----------------------------------------------------------
 Trial 4
-get_most_common_words_that_have_not_been_used_yet: 0.00028324127197265625
-get_slowest_stroked_words(num_words: 1.165977954864502
+get_most_common_words_that_have_not_been_used_yet: 0.00017499923706054688
+get_slowest_stroked_words(num_words: 0.023125171661376953
 
 ----------------------------------------------------------
 Trial 5
-get_most_common_words_that_have_not_been_used_yet: 0.0002884864807128906
-get_slowest_stroked_words(num_words: 1.4860649108886719
+get_most_common_words_that_have_not_been_used_yet: 0.00017714500427246094
+get_slowest_stroked_words(num_words: 0.025272130966186523
 
 ----------------------------------------------------------
 Trial 6
-get_most_common_words_that_have_not_been_used_yet: 0.00029778480529785156
-get_slowest_stroked_words(num_words: 1.8130621910095215
+get_most_common_words_that_have_not_been_used_yet: 0.00019049644470214844
+get_slowest_stroked_words(num_words: 0.023969650268554688
 
 ----------------------------------------------------------
 Trial 7
-get_most_common_words_that_have_not_been_used_yet: 0.000308990478515625
-get_slowest_stroked_words(num_words: 2.1759252548217773
+get_most_common_words_that_have_not_been_used_yet: 0.0001761913299560547
+get_slowest_stroked_words(num_words: 0.024216651916503906
 
 ----------------------------------------------------------
 Trial 8
-get_most_common_words_that_have_not_been_used_yet: 0.0003046989440917969
-get_slowest_stroked_words(num_words: 2.5484728813171387
+get_most_common_words_that_have_not_been_used_yet: 0.00017547607421875
+get_slowest_stroked_words(num_words: 0.023454904556274414
 
 ----------------------------------------------------------
 Trial 9
-get_most_common_words_that_have_not_been_used_yet: 0.0003094673156738281
-get_slowest_stroked_words(num_words: 2.8842482566833496
+get_most_common_words_that_have_not_been_used_yet: 0.00018024444580078125
+get_slowest_stroked_words(num_words: 0.02551102638244629
 
 ----------------------------------------------------------
 Trial 10
-get_most_common_words_that_have_not_been_used_yet: 0.0002963542938232422
-get_slowest_stroked_words(num_words: 3.1619529724121094
+get_most_common_words_that_have_not_been_used_yet: 0.00017213821411132812
+get_slowest_stroked_words(num_words: 0.02501392364501953
 
-* By this point, the Strokes table has 4,321,480 rows
+ * By this point, the Strokes table has 4,321,480 rows

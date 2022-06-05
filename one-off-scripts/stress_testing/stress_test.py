@@ -72,6 +72,16 @@ def write_book():
 
         batch += 1
 
+def invalidate_average_for_words(num_words=100):
+    for word in book_words[:100]:
+        t = (word,)
+        cursor.execute("""UPDATE Words
+                            SET average_stroke_duration_dirty_flag = 1
+                            WHERE word = ?
+                        """, t)
+    connection.commit()
+
+
 def exercise_queries():
     """ Run Steno Ninja queries that we're interested in testing """
     t1 = time()
@@ -80,7 +90,6 @@ def exercise_queries():
 
     print(f'get_most_common_words_that_have_not_been_used_yet: {t2-t1}')
 
-    # TODO: Set dirty flag to TRUE for 100 entries
     storage.update_average_stroke_duration()
     t1 = time()
     storage.get_slowest_stroked_words()
@@ -91,5 +100,6 @@ def exercise_queries():
 for i in range(10):
     print(f'Trial {i+1}')
     write_book()
+    invalidate_average_for_words()
     exercise_queries()
     print('\n----------------------------------------------------------')
