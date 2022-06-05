@@ -97,7 +97,7 @@ def exercise_queries():
 
     print(f'get_slowest_stroked_words(num_words: {t2-t1}')
 
-for i in range(10):
+for i in range(100):
     print(f'Trial {i+1}')
     write_book()
     invalidate_average_for_words()
