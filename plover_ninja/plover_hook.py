@@ -1,13 +1,11 @@
 from plover_ninja.plugins.ninja_test import NinjaTest
-from plover_ninja.plugins.activity_log import ActivityLog
 from plover_ninja.plugins.ninja_repl import NinjaRepl
 from plover_ninja.plugins.stroke_efficiency_log import StrokeEfficiencyLog
 
 import logging
 logger = logging.getLogger(__name__)
 
-NINJA_PLUGINS = [NinjaTest, ActivityLog, StrokeEfficiencyLog,
-                NinjaRepl]
+NINJA_PLUGINS = [NinjaRepl, NinjaTest, StrokeEfficiencyLog]
 
 
 class Main:
