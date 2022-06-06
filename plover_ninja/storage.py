@@ -4,6 +4,7 @@ import math
 import os
 import sqlite3
 from datetime import date
+from pathlib import Path
 from statistics import mean
 from time import time
 
@@ -18,6 +19,10 @@ DB_FILE = os.path.join(DB_DIR, "ninja.db")
 
 def get_connection():
     os.makedirs(DB_DIR, exist_ok=True)
+    db_file = Path(DB_FILE)
+    if not db_file.is_file():
+        db_file.touch()
+        db_file.chmod(0o700)  # Octal: 700
     global connection
     if not connection:
         connection = sqlite3.connect(DB_FILE)
