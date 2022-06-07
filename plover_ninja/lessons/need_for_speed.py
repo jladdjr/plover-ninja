@@ -44,6 +44,7 @@ class NeedForSpeed:
             text = f'{word:{word_padding}} word #{word_id:<{word_id_padding}} avg stroke duration: {average_duration:.3f}  weighted duration: {weighted_duration:.3f}'
             detailed_word_list.append(text)
             word_list.append(word)
+        detailed_word_list = '\n'.join(detailed_word_list)
         word_list = '\n'.join(word_list)
 
         today = date.today()

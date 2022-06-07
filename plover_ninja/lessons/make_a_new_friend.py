@@ -25,6 +25,7 @@ class MakeANewFriend:
             detailed_word_list.append(text)
             word_list.append(word)
         word_list = '\n'.join(word_list)
+        detailed_word_list = '\n'.join(detailed_word_list)
 
         today = date.today()
         file_name_today = today.strftime('%Y%m%d')
