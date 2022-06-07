@@ -282,6 +282,9 @@ def get_slowest_stroked_words(num_words=10):
     return words
 
 def update_average_stroke_duration():
+    # TODO: Add scale testing coverage for this method.
+    # It seems like it has gotten slower.
+    # TODO: Run EXPLAIN on the queries here
     connection = get_connection()
     cur = connection.cursor()
 
