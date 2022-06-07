@@ -7,6 +7,7 @@ from datetime import date
 from pathlib import Path
 from statistics import mean
 from time import time
+from uuid import uuid4
 
 from plover_ninja.wikipedia_word_frequency.word_frequency_list_manager import get_word_frequency_list_as_map
 
@@ -88,9 +89,8 @@ class StrokeEfficiencyLog:
         self.strokes_since_average_recomputed = 0
         StrokeEfficiencyLogInitializer().initialize()
 
-    def add_stroke(self, word, stroke_duration, timestamp=None):
-        """Note how long a stroke took. If `timestamp` is omitted,
-        method uses the current time.
+    def add_stroke(self, word, stroke_duration):
+        """Note how long a stroke took.
 
         Returns True if entry was added successfully, False
         otherwise."""
@@ -104,9 +104,17 @@ class StrokeEfficiencyLog:
 
         cur = self.connection.cursor()
         try:
-            t = (timestamp or time(), stroke_duration, word)
-            cur.execute("""INSERT INTO Strokes(word_id, timestamp, stroke_duration)
-                            SELECT Words.word_id, ?, ?
+            # sqlite date functions:
+            # https://sqlite.org/lang_datefunc.html
+            #
+            # hex() is a helpful sqlite function for
+            # viewing the uuid4 primary key value
+            # used for stroke_uuid
+            # https://sqlite.org/lang_corefunc.html#hex
+            primary_key = uuid4().bytes
+            t = (primary_key, stroke_duration, word)
+            cur.execute("""INSERT INTO Strokes(stroke_uuid, word_id, date, stroke_duration)
+                            SELECT ?, Words.word_id, DATE('now', 'localtime'), ?
                             FROM Words
                             WHERE Words.word = ? LIMIT 1""", t)
             # indicate that average stroke duration needs to
@@ -179,9 +187,9 @@ class StrokeEfficiencyLogInitializer:
             cur.execute('SELECT * FROM Strokes LIMIT 1')
             cur.fetchone()
         except sqlite3.OperationalError:
-            cur.execute("""CREATE TABLE Strokes (stroke_id INTEGER PRIMARY KEY,
+            cur.execute("""CREATE TABLE Strokes (stroke_uuid BLOB PRIMARY KEY,
                                                  word_id INT,
-                                                 timestamp REAL,
+                                                 date INTEGER,
                                                  stroke_duration REAL,
                                                  FOREIGN KEY(word_id) REFERENCES Words(word_id))""")
             cur.execute('CREATE INDEX StrokedWordIndex ON Strokes(word_id)')
@@ -231,7 +239,7 @@ def get_rarely_used_words(num_words=10, threshold=100):
     cur = connection.cursor()
 
     t = (num_words, )
-    cur.execute("""SELECT COUNT(Strokes.stroke_id) AS StrokeCount,
+    cur.execute("""SELECT COUNT(Strokes.stroke_uuid) AS StrokeCount,
                         Words.word_id,
                         Words.word
                         FROM Strokes
