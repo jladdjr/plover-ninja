@@ -3,10 +3,9 @@
 import math
 import os
 import sqlite3
+import threading
 from datetime import date
 from pathlib import Path
-from statistics import mean
-from time import time
 from uuid import uuid4
 
 from plover_ninja.wikipedia_word_frequency.word_frequency_list_manager import get_word_frequency_list_as_map
@@ -15,7 +14,7 @@ connection = None
 
 HOME = os.environ['HOME']
 DB_DIR = os.path.join(HOME, ".plover_ninja")
-DB_FILE = os.path.join(DB_DIR, "ninja.db")
+DB_FILE = os.path.join(DB_DIR, "ninja.db")  # os.path.join returns a string
 
 
 def get_connection():
@@ -29,15 +28,18 @@ def get_connection():
         connection = sqlite3.connect(DB_FILE)
     return connection
 
+
 def close_connection():
     global connection
     if connection:
         connection.close()
         connection = None
 
+
 def today():
     d = date.today()
     return d.strftime("%Y-%m-%d")
+
 
 class SettingsManager:
     def __init__(self):
@@ -87,6 +89,7 @@ class StrokeEfficiencyLog:
     def __init__(self):
         self.connection = get_connection()
         self.strokes_since_average_recomputed = 0
+        self.avg_stroke_recalculation_thread = None
         StrokeEfficiencyLogInitializer().initialize()
 
     def add_stroke(self, word, stroke_duration):
@@ -94,6 +97,13 @@ class StrokeEfficiencyLog:
 
         Returns True if entry was added successfully, False
         otherwise."""
+        # Before processing stroke, see if any existing
+        # threads for recalculating stroke duration averages
+        # have finished
+        t = self.avg_stroke_recalculation_thread
+        if t is not None and not t.is_alive():
+            self.avg_stroke_recalculation_thread = None
+
         if word is None:
             return
 
@@ -103,38 +113,45 @@ class StrokeEfficiencyLog:
         word = word.lower()
 
         cur = self.connection.cursor()
-        try:
-            # sqlite date functions:
-            # https://sqlite.org/lang_datefunc.html
-            #
-            # hex() is a helpful sqlite function for
-            # viewing the uuid4 primary key value
-            # used for stroke_uuid
-            # https://sqlite.org/lang_corefunc.html#hex
-            primary_key = uuid4().bytes
-            t = (primary_key, stroke_duration, word)
-            cur.execute("""INSERT INTO Strokes(stroke_uuid, word_id, date, stroke_duration)
-                            SELECT ?, Words.word_id, DATE('now', 'localtime'), ?
-                            FROM Words
-                            WHERE Words.word = ? LIMIT 1""", t)
-            # indicate that average stroke duration needs to
-            # be recalculated for this word
-            t = (word,)
-            cur.execute("""UPDATE Words
-                           SET average_stroke_duration_dirty_flag = 1
-                           WHERE word = ?""", t)
-            self.connection.commit()
+        # sqlite date functions:
+        # https://sqlite.org/lang_datefunc.html
+        #
+        # hex() is a helpful sqlite function for
+        # viewing the uuid4 primary key value
+        # used for stroke_uuid
+        # https://sqlite.org/lang_corefunc.html#hex
+        primary_key = uuid4().bytes
+        t = (primary_key, stroke_duration, word)
+        cur.execute("""INSERT INTO Strokes(stroke_uuid, word_id, date, stroke_duration)
+                        SELECT ?, Words.word_id, DATE('now', 'localtime'), ?
+                        FROM Words
+                        WHERE Words.word = ? LIMIT 1""", t)
+        # indicate that average stroke duration needs to
+        # be recalculated for this word
+        t = (word,)
+        cur.execute("""UPDATE Words
+                        SET average_stroke_duration_dirty_flag = 1
+                        WHERE word = ?""", t)
+        self.connection.commit()
 
-            self.strokes_since_average_recomputed += 1
+        # periodically recompute average stroke duration
+        self.strokes_since_average_recomputed += 1
 
-            if self.strokes_since_average_recomputed > 100:
-                self.strokes_since_average_recomputed = 0
-                # TODO: add logging statement
-                update_average_stroke_duration()
-
-            return True
-        except Exception:
-            return False
+        if self.strokes_since_average_recomputed > 100:
+            self.strokes_since_average_recomputed = 0
+            # ensure that any existing threads that were
+            # started to recompute average stroke duration
+            # have finished executing. If they have not, raise
+            # an exception as this may be an indication
+            # that the thread's task has run into an issue.
+            if self.avg_stroke_recalculation_thread is not None:
+                error_msg = 'Previous process that was recomputing ' + \
+                    'the average stroke duration never closed.\n' + \
+                    f'{self.avg_stroke_recalculation_proc.exitcode}'
+                # crash hard
+                raise Exception(error_msg)
+            self.avg_stroke_recalculation_thread = update_average_stroke_duration(blocking=False)
+        return True
 
     def get_average_speed_and_frequency_for_stroked_words(self):
         cur = self.connection.cursor()
@@ -216,7 +233,7 @@ class StrokeEfficiencyLogInitializer:
         self.connection.commit()
 
 
-###################################################3
+###################################################
 # Lessons
 
 def get_most_common_words_that_have_not_been_used_yet(num_words=5):
@@ -231,6 +248,7 @@ def get_most_common_words_that_have_not_been_used_yet(num_words=5):
                    LIMIT ?""", t)
     words = cur.fetchall()
     return words
+
 
 def get_rarely_used_words(num_words=10, threshold=100):
     """Returns list of words that have been used less than
@@ -258,6 +276,7 @@ def get_rarely_used_words(num_words=10, threshold=100):
     words = cur.fetchall()
     return words
 
+
 def get_slowest_stroked_words(num_words=10):
     connection = get_connection()
     cur = connection.cursor()
@@ -281,11 +300,9 @@ def get_slowest_stroked_words(num_words=10):
     words = cur.fetchall()
     return words
 
-def update_average_stroke_duration():
-    # TODO: Add scale testing coverage for this method.
-    # It seems like it has gotten slower.
-    # TODO: Run EXPLAIN on the queries here
-    connection = get_connection()
+
+def _update_average_stroke_duration(db_file, name='no_name'):
+    connection = sqlite3.connect(db_file)
     cur = connection.cursor()
 
     # get list of words where the average needs
@@ -301,10 +318,10 @@ def update_average_stroke_duration():
     # a dynamic list
     # https://stackoverflow.com/a/5766293
     cur.execute(f"""SELECT word_id, AVG(stroke_duration)
-                     FROM Strokes
-                     WHERE word_id IN ({','.join(['?']*len(word_ids))})
-                     GROUP BY word_id
-                 """, word_ids)
+                    FROM Strokes
+                    WHERE word_id IN ({','.join(['?']*len(word_ids))})
+                    GROUP BY word_id
+                """, word_ids)
     res = cur.fetchall()
 
     # save new averages
@@ -316,3 +333,19 @@ def update_average_stroke_duration():
                         WHERE word_id = ?""", t)
     # commit results
     connection.commit()
+    connection.close()
+
+
+def update_average_stroke_duration(blocking=True):
+    """If blocking is True, will update averages synchronously.
+
+    If `blocking` is False, will return a Thread object that
+    has been started.
+    """
+    if blocking:
+        _update_average_stroke_duration(DB_FILE)
+        return None
+
+    t = threading.Thread(target=_update_average_stroke_duration, args=(DB_FILE, uuid4()))
+    t.start()
+    return t
