@@ -73,18 +73,19 @@ class WaitForPhrase:
 # Callbacks
 
 class GreetingCallback:
-    def __init__(self, engine):
+    def __init__(self, engine, mini_lesson=True):
         self.engine = engine
+        self.mini_lesson = mini_lesson
 
     def run(self):
         #self.engine._send_string(f'Howdy!🐦🥋\n')
 
-        lesson_text = MakeANewFriend().make_lesson(mini_lesson=True)
+        lesson_text = MakeANewFriend().make_lesson(mini_lesson=self.mini_lesson)
         self.engine._send_string(lesson_text)
 
         self.engine._send_string('\n')
 
-        lesson_text = NeedForSpeed().make_lesson(mini_lesson=True)
+        lesson_text = NeedForSpeed().make_lesson(mini_lesson=self.mini_lesson)
         self.engine._send_string(lesson_text)
 
 ##############################
@@ -102,8 +103,15 @@ class State:
 class WelcomeToNinjaTraining(State):
     def load(self):
         phrase = ['I', 'am', 'ready', 'to', 'practice', '', '', '']
-        callback = GreetingCallback(self.engine)
+        callback = GreetingCallback(self.engine, mini_lesson=True)
         wait_listener = WaitForPhrase(phrase, callback)
 
         self.listener_manager.add_listener('welcome_state.interactive_session_requested',
+                                           wait_listener)
+
+        phrase = ['I', 'am', 'ready', 'to', 'practice', 'with', 'data', '', '', '']
+        callback = GreetingCallback(self.engine, mini_lesson=False)
+        wait_listener = WaitForPhrase(phrase, callback)
+
+        self.listener_manager.add_listener('welcome_state.interactive_session_requested_with_details',
                                            wait_listener)
