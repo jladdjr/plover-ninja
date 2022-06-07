@@ -187,11 +187,18 @@ class StrokeEfficiencyLogInitializer:
             cur.execute('SELECT * FROM Strokes LIMIT 1')
             cur.fetchone()
         except sqlite3.OperationalError:
+            # Create the Strokes table using `WITHOUT ROWID`
+            # in order to prevent the rows from being
+            # listed in the order in which they were added
+            # by a SELECT statement.
+            #
+            # https://www.sqlite.org/withoutrowid.html
             cur.execute("""CREATE TABLE Strokes (stroke_uuid BLOB PRIMARY KEY,
                                                  word_id INT,
                                                  date INTEGER,
                                                  stroke_duration REAL,
-                                                 FOREIGN KEY(word_id) REFERENCES Words(word_id))""")
+                                                 FOREIGN KEY(word_id) REFERENCES Words(word_id))
+                                                WITHOUT ROWID""")
             cur.execute('CREATE INDEX StrokedWordIndex ON Strokes(word_id)')
             self.connection.commit()
 
