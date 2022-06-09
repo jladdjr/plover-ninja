@@ -86,7 +86,7 @@ You can do it!!!
             f.write(text)
 
         if mini_lesson:
-            text = f"""Need For Speed words!
+            text = f"""Need For Speed Words!
 ---------------------
 {word_list}
 """
