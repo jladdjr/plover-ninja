@@ -121,6 +121,7 @@ class StatsCallback:
         stroke_count_width = len(str(max_stroke_count))
 
         lines = []
+        lines.append(f'{"Date":<13} {"# Strokes":<{stroke_count_width}}')
         for d, num_strokes in date_to_stroke_stats_list:
             lines.append(f'{d:<13} {num_strokes:<{stroke_count_width}}')
         return lines
