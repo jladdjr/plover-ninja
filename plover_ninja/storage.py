@@ -351,7 +351,7 @@ def update_average_stroke_duration(blocking=True):
     return t
 
 
-def get_number_of_daily_strokes():
+def get_daily_number_of_strokes():
     connection = sqlite3.connect(DB_FILE)
     cur = connection.cursor()
 
