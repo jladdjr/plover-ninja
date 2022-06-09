@@ -349,3 +349,17 @@ def update_average_stroke_duration(blocking=True):
     t = threading.Thread(target=_update_average_stroke_duration, args=(DB_FILE, uuid4()))
     t.start()
     return t
+
+
+def get_number_of_daily_strokes():
+    connection = sqlite3.connect(DB_FILE)
+    cur = connection.cursor()
+
+    # get list of words where the average needs
+    # to be recomputed
+    cur.execute("""SELECT date, count(stroke_uuid)
+                   FROM Strokes
+                   GROUP BY date
+                   ORDER BY Date Desc""")
+    res = cur.fetchall()
+    return {k: v for k, v in res}
