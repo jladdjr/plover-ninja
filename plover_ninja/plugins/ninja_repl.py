@@ -100,7 +100,6 @@ class StatsCallback:
         stats_text = self.get_stats_content(self.days)
         for line in stats_text:
             self.engine._send_string(f'{line}\n')
-        self.engine._send_string('\n')
 
     def get_stats_content(self, days):
         date_to_stroke_count_map = get_daily_number_of_strokes()
@@ -156,8 +155,22 @@ class WelcomeToNinjaTraining(State):
                                            wait_listener)
 
         phrase = ['show', 'stats', '', '', '']
+        callback = StatsCallback(self.engine, days=10)
+        wait_listener = WaitForPhrase(phrase, callback)
+
+        self.listener_manager.add_listener('welcome_state.show_stats_for_ten_days',
+                                           wait_listener)
+
+        phrase = ['show', 'week', '', '', '']
+        callback = StatsCallback(self.engine, days=7)
+        wait_listener = WaitForPhrase(phrase, callback)
+
+        self.listener_manager.add_listener('welcome_state.show_stats_for_week',
+                                           wait_listener)
+
+        phrase = ['show', 'month', '', '', '']
         callback = StatsCallback(self.engine, days=30)
         wait_listener = WaitForPhrase(phrase, callback)
 
-        self.listener_manager.add_listener('welcome_state.show_stats',
+        self.listener_manager.add_listener('welcome_state.show_stats_for_month',
                                            wait_listener)
