@@ -17,7 +17,11 @@ class NinjaRepl(NinjaPlugin):
     def on_translated(self, old, new):
         if len(new) == 0:
             return
-        new_word = new[0].word.lower()
+        new_word = new[0].word
+
+        if new_word is None:
+            return
+        new_word = new_word.lower()
 
         event = {'new_word': new_word}
         self.listener_manager.send_event_to_listeners(event)
