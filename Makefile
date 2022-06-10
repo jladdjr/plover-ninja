@@ -26,3 +26,9 @@ clean:
 
 clean_db:
 	rm ~/.plover_ninja/ninja.db
+
+package:
+	python3 setup.py sdist bdist_wheel
+
+upload:
+	twine upload dist/*
