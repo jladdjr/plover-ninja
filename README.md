@@ -51,7 +51,7 @@ The output from this command will look something like this:
 
 Entering `Show stats` followed by three returns will list how many words you have steno-ed each day.
 
-The output from this command will look omething like this:
+The output from this command will look something like this:
 
 ![Shows stats](/images/show_stats.png "Show stats")
 
