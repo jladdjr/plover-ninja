@@ -27,3 +27,22 @@ To do this, first click on the Configure gear icon:
 .. then, click on the Plugins tab and click to enable the `ninja_extension`.
 
 ![Plugins Tab](/images/plover_enable_plugin.png "Plugins Tab")
+
+## Usage
+
+You interact with Plover Ninja by.. writing commands! The general format of each command is:
+
+`Command phrase` followed by three returns. The three returns are a special cue to Plover Ninja that what you just wrote should be interpreted as a command. If Plover Ninja recognizes your command, it will take action!
+
+Here is a list of commands currently supported by Plover Ninja
+
+### I am ready to practice
+
+Entering `I am ready to practice` followed by three returns will generate some suggestions for practice words. Currently this includes two sections:
+
+* A list of common words that you have not written yet, and
+* A list of words that take a while to write, on average, and are fairly common
+
+The output from this command will look something like this:
+
+![Practice Words](/images/practice_words.png "Practice Words")
