@@ -63,12 +63,15 @@ There are a few variations on this command, which show your daily word count for
 ## FAQ
 
 Q: When entering a command, does the case matter?
+
 A: Nope! Feel free to use any case
 
 Q: Where does Plover Ninja store its data?
+
 A: In a [SQLite](https://www.sqlite.org/index.html) database located at `$USER_HOME/.plover_ninja/ninja.db`
 
 Q: What steps does Plover Ninja take to protect my data?
+
 A:
 
 * **All Plover Ninja data remains local.**
