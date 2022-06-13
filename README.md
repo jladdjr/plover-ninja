@@ -25,3 +25,5 @@ To do this, first click on the Configure gear icon:
 ![Plover Configuration Gear](/images/plover_configure_gear.png "Configuration Gear")
 
 .. then, click on the Plugins tab and click to enable the `ninja_extension`.
+
+![Plugins Tab](/images/plover_enable_plugin.png "Plugins Tab")
