@@ -9,7 +9,7 @@ Plover Ninja notes the words that you steno and how long it takes to write these
 * Determine which words take the longest to write on average
 * Determine which words you haven't ever written before
 
-Based on this kind of information, Plover Ninja can make some practice recommendations. In order for it's suggestions to be useful, Plover Ninja keeps in mind which words are used most frequently (based on [this data](https://github.com/IlyaSemenov/wikipedia-word-frequency)). With this information in mind, the plugin can suggest:
+Based on this kind of information, Plover Ninja can make some practice recommendations. In order for its suggestions to be useful, Plover Ninja keeps in mind which words are used most frequently (based on [this data](https://github.com/IlyaSemenov/wikipedia-word-frequency)). With this information in mind, the plugin can suggest:
 
 * Words that are worth practicing, because they are both slow *and* are fairly common
 * The most common words that you have never written before
@@ -59,3 +59,21 @@ There are a few variations on this command, which show your daily word count for
 
 * `Show week` will show you daily stroke counts for the past week, and
 * `Show month` will show you daily stroke counts for the past month
+
+## FAQ
+
+Q: When entering a command, does the case matter?
+A: Nope! Feel free to use any case
+
+Q: Where does Plover Ninja store its data?
+A: In a [SQLite](https://www.sqlite.org/index.html) database located at `$USER_HOME/.plover_ninja/ninja.db`
+
+Q: What steps does Plover Ninja take to protect my data?
+A:
+
+* **All Plover Ninja data remains local.**
+* Your `ninja.db` database is created with user-only read, write, and execute permissions.
+
+## Known limitations
+
+* When entering a command, each word in the command must be entered using a single stroke.
