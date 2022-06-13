@@ -5,7 +5,7 @@ from plover_ninja.plugins.stroke_efficiency_log import StrokeEfficiencyLog
 import logging
 logger = logging.getLogger(__name__)
 
-NINJA_PLUGINS = [NinjaRepl, NinjaTest, StrokeEfficiencyLog]
+NINJA_PLUGINS = [NinjaRepl, StrokeEfficiencyLog]
 
 
 class Main:
