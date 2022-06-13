@@ -1,18 +1,27 @@
-# plover-ninja
+# Plover Ninja
 
 ![Ninja Dolores](/images/dolores-ninja.png "Dolores Ninja")
 
-## What the ninja can do for you
+## What does Plover Ninja do?
 
-Suppose you're steno-ing away and you come across a tricky word.
+Plover Ninja notes the words that you write and how long it takes to write these words. Based on this information, it is able to do some neat analysis. The plugin can:
 
-- Maybe the translation is hard to remember
-- Maybe the hand shape is hard to form
-- Maybe you can't remember the translation at all and you need to fingerspell
+* Determine which words take the longest to write
+* Determine which words you haven't ever written before
 
-It's okay, this happens, and you can keep moving, but you also have this nagging feeling that you'd like to try to capture that word so you can revisit it later and smooth out the speed bump.
+Based on this kind of information, Plover Ninja can make recommendations. In order for it's suggestions to be useful, Plover Ninja keeps in mind which words are used most frequently. With this information in mind, the plugin can suggest:
 
-- You could pause to write down the word, but this can interrupt your flow
-- You can ignore the word, but then you risk bumping into the same bump over and over
+* Words that are worth practicing, because they are both slow *and* are fairly common
+* The most common words that you have never written before
 
-If only there was something that could see this practice opportunity for you and squirrel away that information so that you could come back to it later...
+While there are several tools that can help you practice steno, Plover Ninja is unique in that all of its feedback is based on the things you actually write. If you write an email and hit a tricky word, Plover Ninja will see that and be able to point that out later. If you've never used a common word, Plover Ninja will point that out so that you can grow your vocabulary with useful words.
+
+## Setup
+
+Once you have installed Plover Ninja using the [Plover Plugins Manager](https://github.com/openstenoproject/plover/wiki/Plugins), you will need to enable the plugin in Plover.
+
+To do this, first click on the Configure gear icon:
+
+![Plover Configuration Gear](/images/plover_configure_gear.png "Configuration Gear")
+
+.. then, click on the Plugins tab and click to enable the `ninja_extension`.

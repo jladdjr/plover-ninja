@@ -1,6 +1,9 @@
 PLOVER_CMD = plover
 #PLOVER_CMD = /Applications/Plover.app/Contents/MacOS/Plover
 
+install:
+	$(PLOVER_CMD) -s plover_plugins install plover-ninja
+
 dev_install:
 	$(PLOVER_CMD) -s plover_plugins install -e .
 	# workaround since using 'Plover -s plover_plugins install'
