@@ -46,3 +46,16 @@ Entering `I am ready to practice` followed by three returns will generate some s
 The output from this command will look something like this:
 
 ![Practice Words](/images/practice_words.png "Practice Words")
+
+### Show stats
+
+Entering `Show stats` followed by three returns will list how many words you have steno-ed each day.
+
+The output from this command will look omething like this:
+
+![Shows stats](/images/show_stats.png "Show stats")
+
+There are a few variations on this command, which show your daily word count for different lengths of time:
+
+* `Show week` will show you daily stroke counts for the past week, and
+* `Show month` will show you daily stroke counts for the past month
