@@ -1,6 +1,6 @@
 # Plover Ninja
 
-![Ninja Dolores](/images/dolores-ninja.png "Dolores Ninja")
+![Ninja Dolores](https://github.com/jladdjr/plover-ninja/raw/main/images/dolores-ninja.png "Dolores Ninja")
 
 ## What does Plover Ninja do?
 
@@ -22,11 +22,11 @@ Once you have installed Plover Ninja using the [Plover Plugins Manager](https://
 
 To do this, first click on the Configure gear icon:
 
-![Plover Configuration Gear](/images/plover_configure_gear.png "Configuration Gear")
+![Plover Configuration Gear](https://github.com/jladdjr/plover-ninja/raw/main/images/plover_configure_gear.png "Configuration Gear")
 
 .. then, click on the Plugins tab and click to enable the `ninja_extension`.
 
-![Plugins Tab](/images/plover_enable_plugin.png "Plugins Tab")
+![Plugins Tab](https://github.com/jladdjr/plover-ninja/raw/main/images/plover_enable_plugin.png "Plugins Tab")
 
 ## Usage
 
@@ -45,7 +45,7 @@ Entering `I am ready to practice` followed by three returns will generate some s
 
 The output from this command will look something like this:
 
-![Practice Words](/images/practice_words.png "Practice Words")
+![Practice Words](https://github.com/jladdjr/plover-ninja/raw/main/images/practice_words.png "Practice Words")
 
 ### Show stats
 
@@ -53,7 +53,7 @@ Entering `Show stats` followed by three returns will list how many words you hav
 
 The output from this command will look something like this:
 
-![Shows stats](/images/show_stats.png "Show stats")
+![Shows stats](https://github.com/jladdjr/plover-ninja/raw/main/images/show_stats.png "Show stats")
 
 There are a few variations on this command, which show your daily word count for different lengths of time:
 
