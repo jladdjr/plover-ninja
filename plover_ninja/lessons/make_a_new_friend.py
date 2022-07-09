@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
+from pathlib import Path
 from datetime import date
 
-from plover_ninja.storage import get_most_common_words_that_have_not_been_used_yet
+from plover_ninja.storage import get_most_common_words_that_have_not_been_used_yet, TEMP_DIR
+
 
 class MakeANewFriend:
     def __init__(self):
@@ -31,7 +33,7 @@ class MakeANewFriend:
         file_name_today = today.strftime('%Y%m%d')
         report_text_today = today.strftime('%m/%d/%Y')
 
-        with open(f'/tmp/{file_name_today}_make_a_new_friend.txt', 'w') as f:
+        with open(f'{Path(TEMP_DIR) / file_name_today}_make_a_new_friend.txt', 'w', encoding='utf-8') as f:
             text = f"""Ninja Lesson
 {report_text_today}
 

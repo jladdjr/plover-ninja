@@ -1,3 +1,5 @@
+
+from pathlib import Path
 from datetime import datetime
 
 from plover_ninja.lessons.make_a_new_friend import MakeANewFriend
@@ -25,7 +27,7 @@ class StrokeEfficiencyLog(NinjaPlugin):
         self.stroke_efficiency_log = storage.StrokeEfficiencyLog()
         self.words_written_this_session = 0
 
-        with open('/tmp/ninja-stroke-efficiency.txt', 'a') as f:
+        with open(Path(storage.TEMP_DIR) / 'ninja-stroke-efficiency.txt', 'a', encoding='utf-8') as f:
             f.write(f'Stroke Efficiency Log is up and running! 🎉\n')
 
         # TODO: Move lesson creation somewhere else?
@@ -38,7 +40,7 @@ class StrokeEfficiencyLog(NinjaPlugin):
     def _log_efficiency_report(self):
         efficiency_map = self.stroke_efficiency_log.get_average_speed_and_frequency_for_stroked_words()
 
-        with open('/tmp/ninja-stroke-efficiency.txt', 'a') as f:
+        with open(Path(storage.TEMP_DIR) / 'ninja-stroke-efficiency.txt', 'a', encoding='utf-8') as f:
             f.write('\n----------------------------------\n')
             f.write('New stroke efficiency results! 🎉\n\n')
             for word, _, avg_stroke_duration in efficiency_map:
@@ -71,7 +73,7 @@ class StrokeEfficiencyLog(NinjaPlugin):
 
         # record time it took to make last stroke
         self.stroke_efficiency_log.add_stroke(word, gap_between_strokes)
-        with open('/tmp/ninja-stroke-efficiency.txt', 'a') as f:
+        with open(Path(storage.TEMP_DIR) / 'ninja-stroke-efficiency.txt', 'a', encoding='utf-8') as f:
             f.write(f'Stroked {word} in {gap_between_strokes:.2f}\n')
 
         if self.words_written_this_session % 50 == 0:

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
+from pathlib import Path
 from datetime import date
 
-from plover_ninja.storage import get_slowest_stroked_words
+from plover_ninja.storage import get_slowest_stroked_words, TEMP_DIR
+
 
 class NeedForSpeed:
     def __init__(self):
@@ -51,7 +53,7 @@ class NeedForSpeed:
         file_name_today = today.strftime('%Y%m%d')
         report_text_today = today.strftime('%m/%d/%Y')
 
-        with open(f'/tmp/{file_name_today}_need_for_speed.txt', 'w') as f:
+        with open(f'{Path(TEMP_DIR) / file_name_today}_need_for_speed.txt', 'w', encoding='utf-8') as f:
             text = f"""Ninja Lesson
 {report_text_today}
 

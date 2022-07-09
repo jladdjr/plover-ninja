@@ -3,6 +3,7 @@
 import math
 import os
 import sqlite3
+import tempfile
 import threading
 from datetime import date
 from pathlib import Path
@@ -12,7 +13,8 @@ from plover_ninja.wikipedia_word_frequency.word_frequency_list_manager import ge
 
 connection = None
 
-HOME = os.environ['HOME']
+HOME = str(Path.home())
+TEMP_DIR = tempfile.gettempdir()
 DB_DIR = os.path.join(HOME, ".plover_ninja")
 DB_FILE = os.path.join(DB_DIR, "ninja.db")  # os.path.join returns a string
 
