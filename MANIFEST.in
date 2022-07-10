@@ -1,0 +1,2 @@
+# include corpus of common English words
+include plover_ninja/wikipedia_word_frequency/enwiki-20210820-words-frequency.txt
