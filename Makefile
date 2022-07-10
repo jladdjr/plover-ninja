@@ -21,6 +21,7 @@ venv:
 	rm -rf venv
 	python3 -m venv venv
 	venv/bin/pip3 install -r requirements.txt
+	venv/bin/pip3 install -r requirements_packaging.txt
 clean:
 	#rm -rf venv
 	rm -rf plover_ninja.egg-info
