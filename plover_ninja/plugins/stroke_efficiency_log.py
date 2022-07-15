@@ -76,8 +76,5 @@ class StrokeEfficiencyLog(NinjaPlugin):
         with open(Path(storage.TEMP_DIR) / 'ninja-stroke-efficiency.txt', 'a', encoding='utf-8') as f:
             f.write(f'Stroked {word} in {gap_between_strokes:.2f}\n')
 
-        if self.words_written_this_session % 50 == 0:
-            self._log_efficiency_report()
-
     def on_stroked(self, stroke):
         pass
