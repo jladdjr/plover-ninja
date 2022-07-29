@@ -22,7 +22,7 @@ class TestNinjaRepl(TestCase):
         wait_for_phrase.on_event_occurred(stub_event)
         mock_callback.run.assert_called_once()
 
-    def test_receive_case_insensitive_equivalent_one_word_at_a_time(self):
+    def test_receive_case_insensitive_equivalent_phrase(self):
         mock_callback = MagicMock()
         phrase = ['To', 'be', 'or', 'not', 'to', 'be']
         delivered_phrase = ['TO', 'be', 'oR', 'NOt', 'To', 'BE']
@@ -48,6 +48,25 @@ class TestNinjaRepl(TestCase):
 
         wait_for_phrase = WaitForPhrase(phrase, mock_callback)
 
+        for word in delivered_phrase[:-1]:
+            # construct event
+            stub_event = {'new_word': word}
+            wait_for_phrase.on_event_occurred(stub_event)
+
+            self.assertFalse(mock_callback.run.called)
+
+        stub_event = {'new_word': delivered_phrase[-1]}
+        wait_for_phrase.on_event_occurred(stub_event)
+        mock_callback.run.assert_called_once()
+
+    def test_receive_phrase_with_spaces(self):
+        mock_callback = MagicMock()
+        phrase = ['To', 'be', '', 'or', 'not', '', 'to', 'be', '', '', '']
+        delivered_phrase = ['To', 'be', ' ', 'or', 'not', '\t', 'to', 'be', '\n', '\n', '\n']
+
+        wait_for_phrase = WaitForPhrase(phrase, mock_callback)
+
+        # deliver all but the last word
         for word in delivered_phrase[:-1]:
             # construct event
             stub_event = {'new_word': word}

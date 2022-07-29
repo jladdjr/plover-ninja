@@ -68,6 +68,11 @@ class WaitForPhrase:
         words = event['new_word'].split()
         words = list(map(lambda w: w.lower(), words))
 
+        # if no words were received, register event
+        # as an empty space
+        if len(words) == 0:
+            words = ['']
+
         self.received_words.extend(words)
 
         if len(self.received_words) > len(self.phrase):
