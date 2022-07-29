@@ -14,9 +14,6 @@ dev_install:
 dev_uninstall:
 	$(PLOVER_CMD) -s plover_plugins uninstall plover-ninja
 
-sdb:
-	python3 /home/jim/.config/plover/plugins/linux/bin/sdb-listen
-
 list_plugins:
 	$(PLOVER_CMD) -s plover_plugins list
 tail_log:
