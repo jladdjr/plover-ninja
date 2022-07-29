@@ -56,18 +56,19 @@ class ListenerManager:
 # Listeners
 
 class WaitForPhrase:
-    """WaitForPhrase waits for a *case-sensitive* phrase!"""
+    """WaitForPhrase waits for a *case-insensitive* phrase!"""
     def __init__(self, phrase, callback):
-        self.phrase = phrase
+        self.phrase = list(map(lambda w: w.lower(), phrase))
         self.received_words = []
         self.callback = callback
 
     def on_event_occurred(self, event):
         if 'new_word' not in event:
             return
-        word = event['new_word']
+        words = event['new_word'].split()
+        words = list(map(lambda w: w.lower(), words))
 
-        self.received_words.append(word)
+        self.received_words.extend(words)
 
         if len(self.received_words) > len(self.phrase):
             self.received_words = self.received_words[1:]
