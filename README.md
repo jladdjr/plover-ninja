@@ -80,7 +80,3 @@ A:
 
 * **All Plover Ninja data remains local.**
 * Your `ninja.db` database is created with user-only read, write, and execute permissions.
-
-## Known limitations
-
-* When entering a command, each word in the command must be entered using a single stroke.
