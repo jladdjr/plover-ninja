@@ -7,7 +7,7 @@ WORD_FREQUENCY_LIST = pathlib.PurePath(CURR_DIR, 'enwiki-20210820-words-frequenc
 
 def get_word_frequency_list_as_map():
     word_frequency_map = {}
-    with open(WORD_FREQUENCY_LIST, 'r') as f:
+    with open(WORD_FREQUENCY_LIST, 'r', encoding='utf-8', errors='ignore') as f:
         lines = f.readlines()
         for line in lines:
             tokens = line.split()
