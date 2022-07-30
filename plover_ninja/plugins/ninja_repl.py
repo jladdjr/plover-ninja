@@ -17,7 +17,7 @@ class NinjaRepl(NinjaPlugin):
     def on_translated(self, old, new):
         if len(new) == 0:
             return
-        new_word = new[0].word
+        new_word = new[0].text
 
         if new_word is None:
             return
@@ -76,7 +76,7 @@ class WaitForPhrase:
         self.received_words.extend(words)
 
         if len(self.received_words) > len(self.phrase):
-            self.received_words = self.received_words[1:]
+            self.received_words = self.received_words[-1 * len(self.phrase):]
 
         if self.received_words == self.phrase:
             self.callback.run()
